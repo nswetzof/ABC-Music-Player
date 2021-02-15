@@ -20,7 +20,7 @@ public class SequencePlayerTest {
 	private Pitch G = new Pitch('G');
     
     @Test
-    public void test() {
+    public void testPiece1() {
     	try {
     		SequencePlayer player = new SequencePlayer(140, 12);
     		
@@ -55,10 +55,61 @@ public class SequencePlayerTest {
     		player.addNote(D.toMidiNote(), 165, 3);
     		player.addNote(C.toMidiNote(), 168, 24);
     		
-    		//System.err.println(player.toString());
+    		System.err.println(player.toString());
     		
     		player.play();
     		
+    	}
+    	catch(MidiUnavailableException mue) {
+    		fail(mue.getStackTrace().toString());
+    	}
+    	catch(InvalidMidiDataException imde) {
+    		fail(imde.getStackTrace().toString());
+    	}
+    }
+    
+    @Test
+    public void testPiece2() {
+    	try {
+    		SequencePlayer player = new SequencePlayer(200, 6);
+    		
+    		player.addNote(F.transpose(1).toMidiNote(), 0, 3);
+    		player.addNote(E.transpose(Pitch.OCTAVE).toMidiNote(), 0, 3);
+    		player.addNote(F.toMidiNote(), 3, 3);
+    		player.addNote(E.transpose(Pitch.OCTAVE).toMidiNote(), 3, 3);
+    		player.addNote(F.transpose(1).toMidiNote(), 9, 3);
+    		player.addNote(E.transpose(Pitch.OCTAVE).toMidiNote(), 9, 3);
+    		player.addNote(F.transpose(1).toMidiNote(), 15, 3);
+    		player.addNote(E.transpose(Pitch.OCTAVE).toMidiNote(), 15, 3);
+    		player.addNote(F.toMidiNote(), 18, 6);
+    		player.addNote(E.transpose(Pitch.OCTAVE).toMidiNote(), 18, 6);
+    		
+    		player.addNote(G.toMidiNote(), 24, 6);
+    		player.addNote(B.toMidiNote(), 24, 6);
+    		player.addNote(G.transpose(Pitch.OCTAVE).toMidiNote(), 24, 6);
+    		player.addNote(G.toMidiNote(), 36, 6);
+    		
+    		player.addNote(C.transpose(Pitch.OCTAVE).toMidiNote(), 48, 9);
+    		player.addNote(G.toMidiNote(), 57, 3);
+    		player.addNote(E.toMidiNote(), 66, 6);
+    		
+    		player.addNote(E.toMidiNote(), 72, 3);
+    		player.addNote(A.toMidiNote(), 75, 6);
+    		player.addNote(B.toMidiNote(), 81, 6);
+    		player.addNote(B.transpose(-1).toMidiNote(), 87, 3);
+    		player.addNote(A.toMidiNote(), 90, 6);
+    		
+    		player.addNote(G.toMidiNote(), 96, 4);
+    		player.addNote(E.transpose(Pitch.OCTAVE).toMidiNote(), 96, 4);
+    		player.addNote(G.transpose(Pitch.OCTAVE).toMidiNote(), 96, 4);
+    		player.addNote(A.transpose(Pitch.OCTAVE).toMidiNote(), 100, 6);
+    		player.addNote(F.transpose(Pitch.OCTAVE).toMidiNote(), 106, 3);
+    		player.addNote(G.transpose(Pitch.OCTAVE).toMidiNote(), 109, 3);
+    		
+    		player.addNote(E.transpose(Pitch.OCTAVE).toMidiNote(), 115, 6);
+    		player.addNote(C.transpose(Pitch.OCTAVE).toMidiNote(), 121, 3);
+    		player.addNote(D.transpose(Pitch.OCTAVE).toMidiNote(), 124, 3);
+    		player.addNote(B.toMidiNote(), 127, 9);
     	}
     	catch(MidiUnavailableException mue) {
     		fail(mue.getStackTrace().toString());
