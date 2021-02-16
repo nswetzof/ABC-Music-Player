@@ -27,6 +27,7 @@ public class Chord implements Music {
 	/**
 	 * Make a chord
 	 * @param n notes in the chord
+	 * @requires n has at least one note
 	 */
 	public Chord(List<Note> n) {
 		this.notes = new ArrayList<Note>(n);
