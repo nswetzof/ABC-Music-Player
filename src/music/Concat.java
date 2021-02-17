@@ -48,7 +48,7 @@ public class Concat implements Music {
 	}
 	
 	/**
-	 * @return string representation of both pieces, in abc format, separated by a space
+	 * @return string representation of both pieces back to back according to their toString methods
 	 */
 	public String toString() {
 		throw new RuntimeException("Not implemented");
