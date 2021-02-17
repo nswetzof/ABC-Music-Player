@@ -46,7 +46,7 @@ public class Rest implements Music {
 	
 	/**
 	 * String representation of rest object
-	 * @return 'z' symbol
+	 * @return '.' symbol followed by duration
 	 */
 	@Override
 	public String toString() {

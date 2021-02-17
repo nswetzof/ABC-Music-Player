@@ -45,8 +45,9 @@ public class Note implements Music {
 		throw new RuntimeException("Not implemented");
 	}
 	
+	//TODO: might get rid of for all Music classes
 	/**
-	 * @return string representation of the note in abc format
+	 * @return otherwise string representation of the note in abc format followed by duration
 	 */
 	@Override
 	public String toString() {
