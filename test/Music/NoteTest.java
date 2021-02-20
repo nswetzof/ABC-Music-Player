@@ -20,7 +20,7 @@ public class NoteTest {
 	 * 	Partition the inputs as follows:
 	 * 		pitch: natural, sharp, flat
 	 * 		duration: 0, integer number of beats, fractional number of beats
-	 * 		play at beat: 0, integer value, fractional value
+	 * 		play at beat: 0, integer value, fractional value with numerator 1, fractional with value numerator n
 	 * 		pitch in middle C octave, up one octave, up n octaves, down 1 octave, down n octaves
 	 * 	
 	 * 	Verify value returned by getDuration matches expected for each partition of duration
@@ -75,7 +75,7 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers natural pitch, fractional duration
+	// this test covers natural pitch, fractional duration with numerator 1
 	@Test
 	public void testNoteNaturalFractionalDuration() {
 		try {
@@ -95,6 +95,27 @@ public class NoteTest {
 			fail(imde.getStackTrace().toString());
 		}
 	}
+	
+	// this test covers natural pitch, fractional duration with numerator n
+		@Test
+		public void testNoteNaturalFractionalDurationNumeratorN() {
+			try {
+				SequencePlayer player1 = new SequencePlayer(100, 4);
+				SequencePlayer player2 = new SequencePlayer(100, 4);
+				
+				Note note = new Note(.75, new Pitch('C'));
+				assertTrue(.75 == note.getDuration());
+				assertTrue(note.toString().equals("C3/4"));
+				
+				note.play(player1, 0);
+				player2.addNote(new Pitch('C').toMidiNote(), 0, 3);
+				assertEquals(player1.toString(), player2.toString());
+			} catch(MidiUnavailableException mue) {
+				fail(mue.getStackTrace().toString());
+			} catch(InvalidMidiDataException imde) {
+				fail(imde.getStackTrace().toString());
+			}
+		}
 	
 	// this test covers sharp pitch, integer duration
 	@Test
@@ -138,6 +159,27 @@ public class NoteTest {
 		}
 	}
 	
+	// this test covers sharp pitch, fractional duration with numerator n
+		@Test
+		public void testNoteSharpFractionalDurationNumeratorN() {
+			try {
+				SequencePlayer player1 = new SequencePlayer(100, 4);
+				SequencePlayer player2 = new SequencePlayer(100, 4);
+				
+				Note note = new Note(1.5, new Pitch('C').transpose(1));
+				assertTrue(1.5 == note.getDuration());
+				assertTrue(note.toString().equals("^C6/4") || note.toString().equals("^C3/2"));
+				
+				note.play(player1, 0);
+				player2.addNote(new Pitch('C').transpose(1).toMidiNote(), 0, 6);
+				assertEquals(player1.toString(), player2.toString());
+			} catch(MidiUnavailableException mue) {
+				fail(mue.getStackTrace().toString());
+			} catch(InvalidMidiDataException imde) {
+				fail(imde.getStackTrace().toString());
+			}
+		}
+	
 	// this test covers flat pitch, integer duration
 	@Test
 	public void testNoteFlatIntDuration() {
@@ -179,6 +221,27 @@ public class NoteTest {
 			fail(imde.getStackTrace().toString());
 		}
 	}
+	
+	// this test covers flat pitch, fractional duration with numerator n
+		@Test
+		public void testNoteFlatFractionalDurationNumeratorN() {
+			try {
+				SequencePlayer player1 = new SequencePlayer(100, 4);
+				SequencePlayer player2 = new SequencePlayer(100, 4);
+				
+				Note note = new Note(1, new Pitch('C').transpose(-1));
+				assertTrue(.75 == note.getDuration());
+				assertTrue(note.toString().equals("_C3/4"));
+				
+				note.play(player1, 0);
+				player2.addNote(new Pitch('C').transpose(-1).toMidiNote(), 0, 3);
+				assertEquals(player1.toString(), player2.toString());
+			} catch(MidiUnavailableException mue) {
+				fail(mue.getStackTrace().toString());
+			} catch(InvalidMidiDataException imde) {
+				fail(imde.getStackTrace().toString());
+			}
+		}
 	
 	// this test covers sharp pitch, fractional duration, note up one octave
 	@Test
@@ -243,7 +306,7 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers sharp pitch, fractional duration, note down n octaves
+	// this test covers sharp pitch, fractional duration with numerator n, note down n octaves
 	@Test
 	public void testNoteDownMultipleOctaves() {
 		try {
