@@ -48,7 +48,8 @@ public class Note implements Music {
 	//TODO: might get rid of for all Music classes
 	/**
 	 * @return if 0 duration, then empty string;
-	 * 	otherwise string representation of the note in abc format followed by duration
+	 * 	otherwise string representation of the note in abc format followed by duration. If duration is fractional, the
+	 * 	numerator will always be displayed, even if equal to 1
 	 */
 	@Override
 	public String toString() {

@@ -41,7 +41,7 @@ public class Rest implements Music {
 	 */
 	@Override
 	public void play(SequencePlayer player, double atBeat) {
-		throw new RuntimeException("Not implemented");
+		return;
 	}
 	
 	/**
@@ -50,7 +50,10 @@ public class Rest implements Music {
 	 */
 	@Override
 	public String toString() {
-		throw new RuntimeException("Not implemented");
+		if(this.getDuration() == (int)(this.getDuration()))
+			return "." + (int)(this.getDuration());
+		
+		return "." + Music.fractionToString(this.getDuration());
 	}
 	
 	private void checkRep() {
