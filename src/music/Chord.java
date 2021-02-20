@@ -32,17 +32,19 @@ public class Chord implements Music {
 	public Chord(List<Note> n) {
 		this.notes = new ArrayList<Note>(n);
 		
+		duration = this.notes.get(0).getDuration();
+		
 		// find minimum duration
-		Stream<Note> noteStream = this.notes.stream();
-		this.duration = noteStream.map(x -> x.getDuration())
-				.reduce((x, y) -> {if(x < y) return x; return y;})
-				.get();
+//		Stream<Note> noteStream = this.notes.stream();
+//		this.duration = noteStream.map(x -> x.getDuration())
+//				.reduce((x, y) -> {if(x < y) return x; return y;})
+//				.get();
 		
 		checkRep();
 	}
 	
 	/**
-	 * @return duration of the shortest note
+	 * @return duration of the first note
 	 */
 	@Override
 	public double getDuration() {
@@ -61,7 +63,7 @@ public class Chord implements Music {
 	}
 	
 	/**
-	 * @return string representation of the chord in abc format.
+	 * @return string representation of the chord in abc format.  Notes in the chord are displayed in ascending order.
 	 */
 	@Override
 	public String toString() {
