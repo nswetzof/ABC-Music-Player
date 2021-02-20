@@ -45,7 +45,6 @@ public class Note implements Music {
 		throw new RuntimeException("Not implemented");
 	}
 	
-	//TODO: might get rid of for all Music classes
 	/**
 	 * @return if 0 duration, then empty string;
 	 * 	otherwise string representation of the note in abc format followed by duration. If duration is fractional, the

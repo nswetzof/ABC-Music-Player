@@ -1,4 +1,4 @@
-package Music;
+package music;
 
 import static org.junit.Assert.*;
 
@@ -31,7 +31,7 @@ public class RestTest {
 			
 			assertEquals(r1.toString(), ".0");
 			assertEquals(r2.toString(), ".1");
-			assertEquals(r3.toString(), ".0.5");
+			assertEquals(r3.toString(), ".1/2");
 			
 			// test duration = 0, start at beat 0
 			r1.play(player1, 0);

@@ -1,6 +1,5 @@
 package music;
 
-import 
 import abc.sound.SequencePlayer;
 
 /** Represents a musical composition. **/
@@ -35,11 +34,11 @@ public interface Music {
 		// find an integer denominator
 		while(denom <= 32) {
 			newValue = fractionalValue * denom;
-			if(fractionalValue % 1 < epsilon)
+			if(newValue % 1 < epsilon)
 				break;
 			
 			denom++;
-		}		
+		}
 		
 		if(denom > 32)
 			throw new ArithmeticException(fractionalValue + " cannot be represented by a fraction with denominator" +
