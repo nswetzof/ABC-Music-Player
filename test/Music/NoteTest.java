@@ -12,12 +12,16 @@ import abc.sound.SequencePlayer;
 import abc.sound.Pitch;
 
 public class NoteTest {
+	//TODO: may want to change Note toString method to only use sharp symbols to match Pitch class, figure out how
+	//		to account for various possibilities in tests
+	
 	/*
 	 * Testing strategy for Note
 	 * 	Partition the inputs as follows:
 	 * 		pitch: natural, sharp, flat
 	 * 		duration: 0, integer number of beats, fractional number of beats
 	 * 		play at beat: 0, integer value, fractional value
+	 * 		pitch in middle C octave, up one octave, up n octaves, down 1 octave, down n octaves
 	 * 	
 	 * 	Verify value returned by getDuration matches expected for each partition of duration
 	 * 
@@ -168,6 +172,90 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(-1).toMidiNote(), 0, 1);
+			assertEquals(player1.toString(), player2.toString());
+		} catch(MidiUnavailableException mue) {
+			fail(mue.getStackTrace().toString());
+		} catch(InvalidMidiDataException imde) {
+			fail(imde.getStackTrace().toString());
+		}
+	}
+	
+	// this test covers sharp pitch, fractional duration, note up one octave
+	@Test
+	public void testNoteUpOneOctave() {
+		try {
+			SequencePlayer player1 = new SequencePlayer(100, 4);
+			SequencePlayer player2 = new SequencePlayer(100, 4);
+			
+			Note note = new Note(.25, new Pitch('C').transpose(Pitch.OCTAVE + 1));
+			assertTrue(.25 == note.getDuration());
+			assertTrue(note.toString().equals("^c1/4") || note.toString().equals("^c/4"));
+			
+			note.play(player1, 0);
+			player2.addNote(new Pitch('C').transpose(Pitch.OCTAVE + 1).toMidiNote(), 0, 1);
+			assertEquals(player1.toString(), player2.toString());
+		} catch(MidiUnavailableException mue) {
+			fail(mue.getStackTrace().toString());
+		} catch(InvalidMidiDataException imde) {
+			fail(imde.getStackTrace().toString());
+		}
+	}
+	
+	// this test covers flat pitch, fractional duration, note up n octaves
+	@Test
+	public void testNoteUpMultipleOctaves() {
+		try {
+			SequencePlayer player1 = new SequencePlayer(100, 4);
+			SequencePlayer player2 = new SequencePlayer(100, 4);
+			
+			Note note = new Note(.25, new Pitch('E').transpose(Pitch.OCTAVE*2 - 1));
+			assertTrue(.25 == note.getDuration());
+			assertTrue(note.toString().equals("_E''1/4") || note.toString().equals("_E''/4"));
+			
+			note.play(player1, 0);
+			player2.addNote(new Pitch('E').transpose(Pitch.OCTAVE*2 - 1).toMidiNote(), 0, 1);
+			assertEquals(player1.toString(), player2.toString());
+		} catch(MidiUnavailableException mue) {
+			fail(mue.getStackTrace().toString());
+		} catch(InvalidMidiDataException imde) {
+			fail(imde.getStackTrace().toString());
+		}
+	}
+	
+	// this test covers natural pitch, integer duration, note down 1 octave
+	@Test
+	public void testNoteDownOneOctave() {
+		try {
+			SequencePlayer player1 = new SequencePlayer(100, 4);
+			SequencePlayer player2 = new SequencePlayer(100, 4);
+			
+			Note note = new Note(2, new Pitch('C').transpose(-1*Pitch.OCTAVE));
+			assertTrue(2 == note.getDuration());
+			assertTrue(note.toString().equals("C,1/4") || note.toString().equals("C,/4"));
+			
+			note.play(player1, 0);
+			player2.addNote(new Pitch('C').transpose(-1*Pitch.OCTAVE).toMidiNote(), 0, 8);
+			assertEquals(player1.toString(), player2.toString());
+		} catch(MidiUnavailableException mue) {
+			fail(mue.getStackTrace().toString());
+		} catch(InvalidMidiDataException imde) {
+			fail(imde.getStackTrace().toString());
+		}
+	}
+	
+	// this test covers sharp pitch, fractional duration, note down n octaves
+	@Test
+	public void testNoteDownMultipleOctaves() {
+		try {
+			SequencePlayer player1 = new SequencePlayer(100, 4);
+			SequencePlayer player2 = new SequencePlayer(100, 4);
+			
+			Note note = new Note(1.25, new Pitch('C').transpose(-2*Pitch.OCTAVE + 1));
+			assertTrue(1.25 == note.getDuration());
+			assertTrue(note.toString().equals("^C,,5/4"));
+			
+			note.play(player1, 0);
+			player2.addNote(new Pitch('C').transpose(-2*Pitch.OCTAVE + 1).toMidiNote(), 0, 5);
 			assertEquals(player1.toString(), player2.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
