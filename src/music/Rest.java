@@ -4,7 +4,7 @@ import abc.sound.SequencePlayer;
 
 /** Represents a rest between notes in a musical composition **/
 public class Rest implements Music {
-	private final double duration;
+	private final int duration;
 	
 	/*
 	 * Rep invariant:
@@ -19,7 +19,7 @@ public class Rest implements Music {
 	 * Make a musical rest
 	 * @param dur duration of the rest
 	 */
-	public Rest(double dur) {
+	public Rest(int dur) {
 		this.duration = dur;
 		
 		checkRep();
@@ -29,18 +29,18 @@ public class Rest implements Music {
 	 * @return duration of rest
 	 */
 	@Override
-	public double getDuration() {
+	public int getDuration() {
 		return duration;
 	}
 	
 	/**
 	 * Play no sound for the duration defined within this object.
 	 * @param player object which stores data for the musical composition
-	 * @param atBeat When to rest measured in the number of beats from the beginning of the song. The time per beat
+	 * @param atTick When to rest measured in the number of ticks from the beginning of the song. The time per tick
 	 * is defined in the player parameter's fields. 
 	 */
 	@Override
-	public void play(SequencePlayer player, double atBeat) {
+	public void play(SequencePlayer player, int atTick) {
 		return;
 	}
 	

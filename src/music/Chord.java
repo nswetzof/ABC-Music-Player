@@ -9,7 +9,7 @@ import abc.sound.SequencePlayer;
 /** Represents multiple notes playing at the same time **/
 public class Chord implements Music {
 	private final List<Note> notes;
-	private final double duration;
+	private final int duration;
 	
 	/*
 	 * Rep invariant:
@@ -47,18 +47,18 @@ public class Chord implements Music {
 	 * @return duration of the first note
 	 */
 	@Override
-	public double getDuration() {
+	public int getDuration() {
 		return duration;
 	}
 	
 	/**
 	 * Play the chord.
 	 * @param player object which stores data for the musical composition
-	 * @param atBeat When to play measured in the number of beats from the beginning of the song. The time per beat
+	 * @param atTick When to play measured in the number of ticks from the beginning of the song. The time per tick
 	 * is defined in the player parameter's fields. 
 	 */
 	@Override
-	public void play(SequencePlayer player, double atBeat) {
+	public void play(SequencePlayer player, int atTick) {
 		throw new RuntimeException("Not implemented");
 	}
 	

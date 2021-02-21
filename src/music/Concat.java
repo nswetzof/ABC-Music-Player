@@ -33,17 +33,17 @@ public class Concat implements Music {
 	 * @return sum of durations of each musical piece
 	 */
 	@Override
-	public double getDuration() {
+	public int getDuration() {
 		return this.first.getDuration() + this.second.getDuration();
 	}
 	
 	/**
 	 * Play both pieces of music sequentially
 	 * @param player object which stores data for the musical composition
-	 * @param atBeat When to play the first piece of music measured in the number of beats from the beginning of the song.
-	 * The time per beat is defined in the player parameter's fields. 
+	 * @param atTick When to play the first piece of music measured in the number of ticks from the beginning of the song.
+	 * The time per tick is defined in the player parameter's fields. 
 	 */
-	public void play(SequencePlayer player, double atBeat) {
+	public void play(SequencePlayer player, int atTick) {
 		throw new RuntimeException("Not implemented");
 	}
 	
