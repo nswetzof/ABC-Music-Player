@@ -55,8 +55,14 @@ public class Rest implements Music {
 	@Override
 	public String toString() {
 		int dur = this.getDuration();
+		
+		if(dur == 0)
+			return "";
+		
+		else if(dur == this.ticksPerBeat)
+			return ".";
 
-		if(dur % this.ticksPerBeat == 0)
+		else if(dur % this.ticksPerBeat == 0)
 			return "." + dur / this.ticksPerBeat;
 		
 		else {

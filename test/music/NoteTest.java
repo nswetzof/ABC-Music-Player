@@ -44,6 +44,7 @@ public class NoteTest {
 			assertEquals("", note.toString());
 			
 			note.play(player1, 0);
+			player2.addNote(new Pitch('C').toMidiNote(), 0, 0);
 			assertEquals(player1.toString(), player2.toString());
 			
 		} catch(MidiUnavailableException mue) {
@@ -262,7 +263,7 @@ public class NoteTest {
 			
 			Note note = new Note(1, ticksPerBeat, new Pitch('C').transpose(Pitch.OCTAVE + 1));
 			assertTrue(1 == note.getDuration());
-			assertTrue(note.toString().equals("^c1/4") || note.toString().equals("^c/4"));
+			assertTrue(note.toString().equals("^C'1/4") || note.toString().equals("^C'/4"));
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(Pitch.OCTAVE + 1).toMidiNote(), 0, 1);
@@ -306,7 +307,7 @@ public class NoteTest {
 			
 			Note note = new Note(8, ticksPerBeat, new Pitch('C').transpose(-1*Pitch.OCTAVE));
 			assertTrue(8 == note.getDuration());
-			assertTrue(note.toString().equals("C,1/4") || note.toString().equals("C,/4"));
+			assertTrue(note.toString().equals("C,2") || note.toString().equals("C,2"));
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(-1*Pitch.OCTAVE).toMidiNote(), 0, 8);

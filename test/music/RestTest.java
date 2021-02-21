@@ -30,8 +30,8 @@ public class RestTest {
 			Rest r2 = new Rest(4, ticksPerBeat);
 			Rest r3 = new Rest(1, ticksPerBeat);
 			
-			assertEquals(r1.toString(), ".0");
-			assertEquals(r2.toString(), ".1");
+			assertEquals(r1.toString(), "");
+			assertEquals(r2.toString(), ".");
 			assertEquals(r3.toString(), ".1/4");
 			
 			// test duration = 0, start at tick 0

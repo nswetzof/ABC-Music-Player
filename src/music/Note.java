@@ -45,9 +45,7 @@ public class Note implements Music {
 	 */
 	@Override
 	public void play(SequencePlayer player, int atTick) {
-//		player.addNote(pitch.toMidiNote(), atTick * player., numTicks); // TODO: Fix. Want to change to tick-based instead of beat-based classes
-																		// TODO: Add ticksPerBeat to classes and fix tests
-		throw new RuntimeException("Not implemented");
+		player.addNote(pitch.toMidiNote(), atTick, this.getDuration());
 	}
 	
 	/**
@@ -57,7 +55,22 @@ public class Note implements Music {
 	 */
 	@Override
 	public String toString() {
-		throw new RuntimeException("Not implemented");
+		int dur = this.getDuration();
+		
+		if(dur == 0)
+			return "";
+		
+		else if(dur == this.ticksPerBeat)
+			return this.pitch.toString();
+		
+		else if(dur % this.ticksPerBeat == 0)
+			return this.pitch.toString() + (dur / this.ticksPerBeat);
+		
+		else {
+			int gcd = Music.greatestCommonDivisor(dur, this.ticksPerBeat);
+			
+			return this.pitch.toString() + (dur / gcd) + "/" + (this.ticksPerBeat / gcd);
+		}
 	}
 	
 	private void checkRep() {
