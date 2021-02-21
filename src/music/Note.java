@@ -61,7 +61,7 @@ public class Note implements Music {
 	/**
 	 * @return if 0 duration, then empty string;
 	 * 	otherwise string representation of the note in abc format followed by duration. If duration is fractional, the
-	 * 	numerator will always be displayed, even if equal to 1
+	 * 	numerator will always be displayed, even if equal to 1, and the fraction will be reduced to its lowest terms.
 	 */
 	@Override
 	public String toString() {
