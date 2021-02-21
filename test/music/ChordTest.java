@@ -21,7 +21,8 @@ public class ChordTest {
 	 * Testing strategy for chord:
 	 * 	Partition the inputs as follows:
 	 * 		number of notes: 1, n
-	 * 		notes have same length, different length
+	 * 		notes have same lengths, different lengths
+	 * 		notes in Chord.notes in ascending order of pitch, not in ascending order of pitch
 	 * 
 	 * 	Verify values returned by getDuration match expected for each partition of input
 	 * 
@@ -35,11 +36,12 @@ public class ChordTest {
 	@Test
 	public void testChordOneNote() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
 			List<Note> notes = new ArrayList<Note>();
-			Note note1 = new Note(1, new Pitch('C'));
+			Note note1 = new Note(4, ticksPerBeat, new Pitch('C'));
 			notes.add(note1);
 			Chord chord = new Chord(notes);
 			
@@ -58,17 +60,18 @@ public class ChordTest {
 		}
 	}
 
-	// this test covers multiple notes in chord, notes have same length
+	// this test covers multiple notes in chord, notes have same length, notes not in ascending order of pitch
 	@Test
 	public void testChordMultipleNotesSameLength() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
 			List<Note> notes = new ArrayList<Note>();
-			Note note1 = new Note(1, new Pitch('C'));
-			Note note2 = new Note(1, new Pitch('E'));
-			Note note3 = new Note(1, new Pitch('G'));
+			Note note1 = new Note(4, ticksPerBeat, new Pitch('C'));
+			Note note2 = new Note(4, ticksPerBeat, new Pitch('E'));
+			Note note3 = new Note(4, ticksPerBeat, new Pitch('G'));
 			
 			notes.add(note1);
 			notes.add(note2);
@@ -81,8 +84,8 @@ public class ChordTest {
 			
 			chord.play(player1, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 4);
-			player2.addNote(new Pitch('E').toMidiNote(), 0, 4);
 			player2.addNote(new Pitch('G').toMidiNote(), 0, 4);
+			player2.addNote(new Pitch('E').toMidiNote(), 0, 4);
 			assertEquals(player1.toString(), player2.toString());
 			
 		} catch(MidiUnavailableException mue) {
@@ -92,17 +95,18 @@ public class ChordTest {
 		}
 	}
 	
-	// this test covers multiple notes in chord, notes have differing lengths
+	// this test covers multiple notes in chord, notes have differing lengths, notes in ascending order of pitch
 	@Test
 	public void testChordMultipleNotesDifferentLength() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
 			List<Note> notes = new ArrayList<Note>();
-			Note note1 = new Note(1, new Pitch('C'));
-			Note note2 = new Note(.5, new Pitch('E').transpose(-1));
-			Note note3 = new Note(2, new Pitch('G'));
+			Note note1 = new Note(4, ticksPerBeat, new Pitch('C'));
+			Note note2 = new Note(2, ticksPerBeat, new Pitch('E').transpose(-1));
+			Note note3 = new Note(8, ticksPerBeat, new Pitch('G'));
 			
 			notes.add(note1);
 			notes.add(note2);
