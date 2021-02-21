@@ -51,7 +51,7 @@ public class ChordTest {
 			
 			chord.play(player1, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 4);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -86,7 +86,7 @@ public class ChordTest {
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 4);
 			player2.addNote(new Pitch('E').toMidiNote(), 0, 4);
 			player2.addNote(new Pitch('G').toMidiNote(), 0, 4);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());

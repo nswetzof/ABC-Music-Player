@@ -45,7 +45,7 @@ public class ConcatTest {
 			
 			concat.play(player1, 0);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -72,7 +72,7 @@ public class ConcatTest {
 			
 			concat.play(player1, 3);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -99,7 +99,7 @@ public class ConcatTest {
 			
 			concat.play(player1, 0);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -126,9 +126,9 @@ public class ConcatTest {
 			
 			concat.play(player1, 3);
 			
-			player2.addNote(new Pitch('C').toMidiNote(), 2, 3);
+			player2.addNote(new Pitch('C').toMidiNote(), 5, 0);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -157,7 +157,7 @@ public class ConcatTest {
 			
 			player2.addNote(new Pitch('C').toMidiNote(), 2, 5);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -187,7 +187,7 @@ public class ConcatTest {
 			player2.addNote(new Pitch('A').toMidiNote(), 0, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 0);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -217,7 +217,7 @@ public class ConcatTest {
 			player2.addNote(new Pitch('A').toMidiNote(), 0, 2);
 			player2.addNote(new Pitch('C').toMidiNote(), 2, 5);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -254,7 +254,7 @@ public class ConcatTest {
 			player2.addNote(new Pitch('E').toMidiNote(), 2, 4);
 			player2.addNote(new Pitch('G').toMidiNote(), 2, 6);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -291,7 +291,7 @@ public class ConcatTest {
 			player2.addNote(new Pitch('G').toMidiNote(), 3, 6);
 			player2.addNote(new Pitch('A').toMidiNote(), 8, 2);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -325,7 +325,7 @@ public class ConcatTest {
 			player2.addNote(new Pitch('A').toMidiNote(), 3, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 3, 0);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -360,7 +360,7 @@ public class ConcatTest {
 			player2.addNote(new Pitch('C').toMidiNote(), 4, 4);
 			player2.addNote(new Pitch('C').toMidiNote(), 8, 2);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -398,7 +398,7 @@ public class ConcatTest {
 			player2.addNote(new Pitch('C').toMidiNote(), 4, 4);
 			player2.addNote(new Pitch('G').toMidiNote(), 8, 0);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -434,9 +434,9 @@ public class ConcatTest {
 			
 			player2.addNote(new Pitch('A').toMidiNote(), 3, 4);
 			player2.addNote(new Pitch('C').toMidiNote(), 7, 4);
-			player2.addNote(new Pitch('G').toMidiNote(), 10, 1);
+			player2.addNote(new Pitch('G').toMidiNote(), 14, 1);
 			
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());

@@ -36,27 +36,27 @@ public class RestTest {
 			
 			// test duration = 0, start at tick 0
 			r1.play(player1, 0);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 			// test duration = 0, start at tick n
 			r1.play(player1, 3);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 			// test duration is integer number of beats, start at tick 0
 			r2.play(player1, 0);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 			// test duration is integer number of beats, start at tick n
 			r2.play(player1, 3);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 			// test duration is fractional number of beats, start at beat 0
 			r3.play(player1, 0);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 			// test duration is fractional number of beats, start at tick n
 			r3.play(player1, 3);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch (MidiUnavailableException mue) {
 	        mue.printStackTrace();

@@ -44,14 +44,21 @@ public class Concat implements Music {
 	 * The time per tick is defined in the player parameter's fields. 
 	 */
 	public void play(SequencePlayer player, int atTick) {
-		throw new RuntimeException("Not implemented");
+		first.play(player, atTick);
+		second.play(player, atTick + first.getDuration());
 	}
 	
 	/**
 	 * @return string representation of both pieces back to back according to their toString methods
 	 */
 	public String toString() {
-		throw new RuntimeException("Not implemented");
+		if(first.getDuration() == 0)
+			return second.toString();
+		
+		if(second.getDuration() == 0)
+			return first.toString();
+		
+		return first.toString() + " " + second.toString();
 	}
 	
 	private void checkRep() {

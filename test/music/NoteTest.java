@@ -45,7 +45,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 0);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -69,7 +69,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 4);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -91,7 +91,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 1);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -113,7 +113,7 @@ public class NoteTest {
 				
 				note.play(player1, 0);
 				player2.addNote(new Pitch('C').toMidiNote(), 0, 3);
-				assertEquals(player1.toString(), player2.toString());
+				assertEquals(player2.toString(), player1.toString());
 			} catch(MidiUnavailableException mue) {
 				fail(mue.getStackTrace().toString());
 			} catch(InvalidMidiDataException imde) {
@@ -135,7 +135,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(1).toMidiNote(), 0, 4);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -157,7 +157,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(1).toMidiNote(), 0, 1);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -179,7 +179,7 @@ public class NoteTest {
 				
 				note.play(player1, 0);
 				player2.addNote(new Pitch('C').transpose(1).toMidiNote(), 0, 6);
-				assertEquals(player1.toString(), player2.toString());
+				assertEquals(player2.toString(), player1.toString());
 			} catch(MidiUnavailableException mue) {
 				fail(mue.getStackTrace().toString());
 			} catch(InvalidMidiDataException imde) {
@@ -201,7 +201,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('E').transpose(-1).toMidiNote(), 0, 4);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -223,7 +223,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(-1).toMidiNote(), 0, 1);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -245,7 +245,7 @@ public class NoteTest {
 				
 				note.play(player1, 0);
 				player2.addNote(new Pitch('E').transpose(-1).toMidiNote(), 0, 3);
-				assertEquals(player1.toString(), player2.toString());
+				assertEquals(player2.toString(), player1.toString());
 			} catch(MidiUnavailableException mue) {
 				fail(mue.getStackTrace().toString());
 			} catch(InvalidMidiDataException imde) {
@@ -267,7 +267,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(Pitch.OCTAVE + 1).toMidiNote(), 0, 1);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -289,7 +289,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('E').transpose(Pitch.OCTAVE*2 - 1).toMidiNote(), 0, 1);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -311,7 +311,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(-1*Pitch.OCTAVE).toMidiNote(), 0, 8);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
@@ -333,7 +333,7 @@ public class NoteTest {
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(-2*Pitch.OCTAVE + 1).toMidiNote(), 0, 5);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
 		} catch(InvalidMidiDataException imde) {
