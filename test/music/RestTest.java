@@ -14,8 +14,8 @@ public class RestTest {
 	/*
 	 * Testing strategy for Rest:
 	 * 	Partition the inputs as follows:
-	 * 		durations: 0, integer value, fractional value
-	 * 		starting beat: 0, integer value, fractional value
+	 * 		durations: 0, integer number of beats, fractional number of beats
+	 * 		starting tick: 0, n
 	 * 	
 	 * 	Verify Rest object matches expected after being fed into a SequencePlayer using play method
 	 */
@@ -23,50 +23,39 @@ public class RestTest {
 	@Test
 	public void testRest() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
-			Rest r1 = new Rest(0);
-			Rest r2 = new Rest(1);
-			Rest r3 = new Rest(.5);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
+			Rest r1 = new Rest(0, ticksPerBeat);
+			Rest r2 = new Rest(4, ticksPerBeat);
+			Rest r3 = new Rest(1, ticksPerBeat);
 			
 			assertEquals(r1.toString(), ".0");
 			assertEquals(r2.toString(), ".1");
-			assertEquals(r3.toString(), ".1/2");
+			assertEquals(r3.toString(), ".1/4");
 			
-			// test duration = 0, start at beat 0
+			// test duration = 0, start at tick 0
 			r1.play(player1, 0);
 			assertEquals(player1.toString(), player2.toString());
 			
-			// test duration = 0, start at integer value
+			// test duration = 0, start at tick n
 			r1.play(player1, 3);
 			assertEquals(player1.toString(), player2.toString());
 			
-			// test duration = 0, start at fractional value
-			r1.play(player1, 2.25);
-			assertEquals(player1.toString(), player2.toString());
-			
-			// test duration is integer, start at beat 0
+			// test duration is integer number of beats, start at tick 0
 			r2.play(player1, 0);
 			assertEquals(player1.toString(), player2.toString());
 			
-			// test duration is integer, start at integer value
+			// test duration is integer number of beats, start at tick n
 			r2.play(player1, 3);
 			assertEquals(player1.toString(), player2.toString());
 			
-			// test duration is integer, start at fractional value
-			r2.play(player1, 2.25);
-			assertEquals(player1.toString(), player2.toString());
-			
-			// test duration is fractional value, start at beat 0
+			// test duration is fractional number of beats, start at beat 0
 			r3.play(player1, 0);
 			assertEquals(player1.toString(), player2.toString());
 			
-			// test duration is fractional value, start at integer value
+			// test duration is fractional number of beats, start at tick n
 			r3.play(player1, 3);
-			assertEquals(player1.toString(), player2.toString());
-			
-			// test duration is fractional value, start at fractional value
-			r3.play(player1, 2.25);
 			assertEquals(player1.toString(), player2.toString());
 			
 		} catch (MidiUnavailableException mue) {
