@@ -5,6 +5,7 @@ import abc.sound.Pitch;
 
 public class Note implements Music {
 	private final int duration;
+	private final int ticksPerBeat;
 	private final Pitch pitch;
 	
 	/*
@@ -17,10 +18,12 @@ public class Note implements Music {
 	/**
 	 * Make a musical note
 	 * @param dur duration of the note in beats
+	 * @param perBeat number of ticks per beat
 	 * @param p pitch of the note
 	 */
-	public Note(int dur, Pitch p) {
+	public Note(int dur, int perBeat, Pitch p) {
 		this.duration = dur;
+		this.ticksPerBeat = perBeat;
 		this.pitch = p;
 		
 		checkRep();

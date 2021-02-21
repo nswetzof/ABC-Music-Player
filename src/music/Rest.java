@@ -5,6 +5,7 @@ import abc.sound.SequencePlayer;
 /** Represents a rest between notes in a musical composition **/
 public class Rest implements Music {
 	private final int duration;
+	private final int ticksPerBeat;
 	
 	/*
 	 * Rep invariant:
@@ -18,9 +19,11 @@ public class Rest implements Music {
 	/**
 	 * Make a musical rest
 	 * @param dur duration of the rest
+	 * @param perBeat number of ticks per beat
 	 */
-	public Rest(int dur) {
+	public Rest(int dur, int perBeat) {
 		this.duration = dur;
+		this.ticksPerBeat = perBeat;
 		
 		checkRep();
 	}
