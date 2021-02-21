@@ -197,7 +197,7 @@ public class NoteTest {
 			
 			Note note = new Note(4, ticksPerBeat, new Pitch('E').transpose(-1));
 			assertTrue(4 == note.getDuration());
-			assertEquals("_E", note.toString());
+			assertEquals("^D", note.toString());
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('E').transpose(-1).toMidiNote(), 0, 4);
@@ -217,9 +217,9 @@ public class NoteTest {
 			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
 			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(4, ticksPerBeat, new Pitch('C').transpose(-1));
+			Note note = new Note(1, ticksPerBeat, new Pitch('C').transpose(-1));
 			assertTrue(1 == note.getDuration());
-			assertTrue(note.toString().equals("_C1/4") || note.toString().equals("_C/4"));
+			assertTrue(note.toString().equals("B,1/4") || note.toString().equals("B,/4"));
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('C').transpose(-1).toMidiNote(), 0, 1);
@@ -241,7 +241,7 @@ public class NoteTest {
 				
 				Note note = new Note(3, ticksPerBeat, new Pitch('E').transpose(-1));
 				assertTrue(3 == note.getDuration());
-				assertTrue(note.toString().equals("_E3/4"));
+				assertTrue(note.toString().equals("^D3/4"));
 				
 				note.play(player1, 0);
 				player2.addNote(new Pitch('E').transpose(-1).toMidiNote(), 0, 3);
@@ -285,7 +285,7 @@ public class NoteTest {
 			
 			Note note = new Note(1, ticksPerBeat, new Pitch('E').transpose(Pitch.OCTAVE*2 - 1));
 			assertTrue(1 == note.getDuration());
-			assertTrue(note.toString().equals("_E''1/4") || note.toString().equals("_E''/4"));
+			assertTrue(note.toString().equals("^D''1/4") || note.toString().equals("^D''/4"));
 			
 			note.play(player1, 0);
 			player2.addNote(new Pitch('E').transpose(Pitch.OCTAVE*2 - 1).toMidiNote(), 0, 1);
