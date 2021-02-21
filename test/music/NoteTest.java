@@ -1,4 +1,4 @@
-package Music;
+package music;
 
 import static org.junit.Assert.*;
 
