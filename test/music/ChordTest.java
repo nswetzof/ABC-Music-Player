@@ -45,7 +45,7 @@ public class ChordTest {
 			notes.add(note1);
 			Chord chord = new Chord(notes);
 			
-			assertTrue(chord.getDuration() == 1);
+			assertTrue(chord.getDuration() == 4);
 			
 			assertEquals(chord.toString(), "[C]");
 			
@@ -78,14 +78,14 @@ public class ChordTest {
 			notes.add(note3);
 			Chord chord = new Chord(notes);
 			
-			assertTrue(chord.getDuration() == 1);
+			assertTrue(chord.getDuration() == 4);
 			
 			assertEquals(chord.toString(), "[CEG]");
 			
 			chord.play(player1, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 4);
-			player2.addNote(new Pitch('G').toMidiNote(), 0, 4);
 			player2.addNote(new Pitch('E').toMidiNote(), 0, 4);
+			player2.addNote(new Pitch('G').toMidiNote(), 0, 4);
 			assertEquals(player1.toString(), player2.toString());
 			
 		} catch(MidiUnavailableException mue) {
@@ -113,15 +113,15 @@ public class ChordTest {
 			notes.add(note3);
 			Chord chord = new Chord(notes);
 			
-			assertTrue(chord.getDuration() == 1);
+			assertTrue(chord.getDuration() == 4);
 			
-			assertTrue(chord.toString().equals("[C_E1/2G2]") || chord.toString().equals("[C_E/2G2]"));
+			assertTrue(chord.toString().equals("[C^D1/2G2]") || chord.toString().equals("[C^D/2G2]"));
 			
 			chord.play(player1, 0);
 			player2.addNote(new Pitch('C').toMidiNote(), 0, 4);
 			player2.addNote(new Pitch('E').transpose(-1).toMidiNote(), 0, 2);
 			player2.addNote(new Pitch('G').toMidiNote(), 0, 8);
-			assertEquals(player1.toString(), player2.toString());
+			assertEquals(player2.toString(), player1.toString());
 			
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());

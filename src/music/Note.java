@@ -38,6 +38,16 @@ public class Note implements Music {
 	}
 	
 	/**
+	 * @return pitch of the note
+	 */
+	public Pitch getPitch() {
+		Pitch p = new Pitch('C');
+		p = this.pitch;
+		
+		return p;
+	}
+	
+	/**
 	 * Play the note for its duration.
 	 * @param player object which stores data for the musical composition
 	 * @param atTick When to play measured in the number of ticks from the beginning of the song. The time per tick
@@ -71,6 +81,19 @@ public class Note implements Music {
 			
 			return this.pitch.toString() + (dur / gcd) + "/" + (this.ticksPerBeat / gcd);
 		}
+	}
+	
+	/**
+	 * Compare pitch of this object with pitch of another Note object
+	 * @param that note to be compared
+	 * @return 0 if notes are equal in pitch, -1 if this note's pitch is less than that's, 1 otherwise
+	 */
+	public int compare(Note that) {
+		if(this.pitch == that.pitch)
+			return 0;
+		if(this.pitch.lessThan(that.pitch))
+			return -1;
+		return 1;
 	}
 	
 	private void checkRep() {

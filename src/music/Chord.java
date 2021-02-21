@@ -2,6 +2,7 @@ package music;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.stream.Stream;
 
 import abc.sound.SequencePlayer;
@@ -31,14 +32,9 @@ public class Chord implements Music {
 	 */
 	public Chord(List<Note> n) {
 		this.notes = new ArrayList<Note>(n);
+		this.notes.sort((x, y) -> x.compare(y));
 		
 		duration = this.notes.get(0).getDuration();
-		
-		// find minimum duration
-//		Stream<Note> noteStream = this.notes.stream();
-//		this.duration = noteStream.map(x -> x.getDuration())
-//				.reduce((x, y) -> {if(x < y) return x; return y;})
-//				.get();
 		
 		checkRep();
 	}
@@ -59,15 +55,24 @@ public class Chord implements Music {
 	 */
 	@Override
 	public void play(SequencePlayer player, int atTick) {
-		throw new RuntimeException("Not implemented");
+		for(Note note : this.notes)
+			player.addNote(note.getPitch().toMidiNote(), atTick, note.getDuration());
 	}
 	
 	/**
 	 * @return string representation of the chord in abc format.  Notes in the chord are displayed in ascending order.
 	 */
 	@Override
-	public String toString() {
-		throw new RuntimeException("Not implemented");
+	public String toString() {		
+		StringBuilder sb = new StringBuilder("");
+		sb.append('[');
+		
+		for(Note note : this.notes)
+			sb.append(note.toString());
+		
+		sb.append(']');
+		
+		return sb.toString();
 	}
 	
 	private void checkRep() {
