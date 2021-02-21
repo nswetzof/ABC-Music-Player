@@ -19,8 +19,8 @@ public class NoteTest {
 	 * Testing strategy for Note
 	 * 	Partition the inputs as follows:
 	 * 		pitch: natural, sharp, flat
-	 * 		duration: 0, integer number of beats, fractional number of beats
-	 * 		play at beat: 0, integer value, fractional value with numerator 1, fractional with value numerator n
+	 * 		duration: 0, integer number of beats, fractional number of beats: with numerator 1, with numerator n
+	 * 		play at tick: 0, 1, n
 	 * 		pitch in middle C octave, up one octave, up n octaves, down 1 octave, down n octaves
 	 * 	
 	 * 	Verify value returned by getDuration matches expected for each partition of duration
@@ -35,15 +35,15 @@ public class NoteTest {
 	@Test
 	public void testNoteZeroDuration() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(0, new Pitch('C'));
+			Note note = new Note(0, ticksPerBeat, new Pitch('C'));
 			assertTrue(0 == note.getDuration());
 			assertEquals("", note.toString());
 			
 			note.play(player1, 0);
-//			player2.addNote(new Pitch('C').toMidiNote(), 0, 0); // don't need this line because note has 0 duration
 			assertEquals(player1.toString(), player2.toString());
 			
 		} catch(MidiUnavailableException mue) {
@@ -54,15 +54,16 @@ public class NoteTest {
 		
 	}
 
-	// this test covers natural pitch, integer duration
+	// this test covers natural pitch, duration is integer number of beats
 	@Test
 	public void testNoteNaturalIntDuration() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(1, new Pitch('C'));
-			assertTrue(1 == note.getDuration());
+			Note note = new Note(4, ticksPerBeat, new Pitch('C'));
+			assertTrue(4 == note.getDuration());
 			assertEquals("C", note.toString());
 			
 			note.play(player1, 0);
@@ -75,15 +76,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers natural pitch, fractional duration with numerator 1
+	// this test covers natural pitch, duration is fractional number of beats with numerator 1
 	@Test
 	public void testNoteNaturalFractionalDuration() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(.25, new Pitch('C'));
-			assertTrue(.25 == note.getDuration());
+			Note note = new Note(1, ticksPerBeat, new Pitch('C'));
+			assertTrue(1 == note.getDuration());
 			assertTrue(note.toString().equals("C1/4") || note.toString().equals("C/4"));
 			
 			note.play(player1, 0);
@@ -96,15 +98,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers natural pitch, fractional duration with numerator n
+	// this test covers natural pitch, duration is fractional number of beats with numerator n
 		@Test
 		public void testNoteNaturalFractionalDurationNumeratorN() {
 			try {
-				SequencePlayer player1 = new SequencePlayer(100, 4);
-				SequencePlayer player2 = new SequencePlayer(100, 4);
+				final int ticksPerBeat = 4;
+				SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+				SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 				
-				Note note = new Note(.75, new Pitch('C'));
-				assertTrue(.75 == note.getDuration());
+				Note note = new Note(3, ticksPerBeat, new Pitch('C'));
+				assertTrue(3 == note.getDuration());
 				assertTrue(note.toString().equals("C3/4"));
 				
 				note.play(player1, 0);
@@ -117,15 +120,16 @@ public class NoteTest {
 			}
 		}
 	
-	// this test covers sharp pitch, integer duration
+	// this test covers sharp pitch, duration is integer number of beats
 	@Test
 	public void testNoteSharpIntDuration() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(1, new Pitch('C').transpose(1));
-			assertTrue(1 == note.getDuration());
+			Note note = new Note(4, ticksPerBeat, new Pitch('C').transpose(1));
+			assertTrue(4 == note.getDuration());
 			assertEquals("^C", note.toString());
 			
 			note.play(player1, 0);
@@ -138,15 +142,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers sharp pitch, fractional duration
+	// this test covers sharp pitch, duration is fractional number of beats with numerator 1
 	@Test
 	public void testNoteSharpFractionalDuration() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(.25, new Pitch('C').transpose(1));
-			assertTrue(.25 == note.getDuration());
+			Note note = new Note(1, ticksPerBeat, new Pitch('C').transpose(1));
+			assertTrue(1 == note.getDuration());
 			assertTrue(note.toString().equals("^C1/4") || note.toString().equals("^C/4"));
 			
 			note.play(player1, 0);
@@ -159,15 +164,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers sharp pitch, fractional duration with numerator n
+	// this test covers sharp pitch, duration is fractional number of beats with numerator n
 		@Test
 		public void testNoteSharpFractionalDurationNumeratorN() {
 			try {
-				SequencePlayer player1 = new SequencePlayer(100, 4);
-				SequencePlayer player2 = new SequencePlayer(100, 4);
+				final int ticksPerBeat = 4;
+				SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+				SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 				
-				Note note = new Note(1.5, new Pitch('C').transpose(1));
-				assertTrue(1.5 == note.getDuration());
+				Note note = new Note(6, ticksPerBeat, new Pitch('C').transpose(1));
+				assertTrue(6 == note.getDuration());
 				assertTrue(note.toString().equals("^C6/4") || note.toString().equals("^C3/2"));
 				
 				note.play(player1, 0);
@@ -180,19 +186,20 @@ public class NoteTest {
 			}
 		}
 	
-	// this test covers flat pitch, integer duration
+	// this test covers flat pitch, duration is integer number of beats
 	@Test
 	public void testNoteFlatIntDuration() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(1, new Pitch('C').transpose(-1));
-			assertTrue(1 == note.getDuration());
-			assertEquals("_C", note.toString());
+			Note note = new Note(4, ticksPerBeat, new Pitch('E').transpose(-1));
+			assertTrue(4 == note.getDuration());
+			assertEquals("_E", note.toString());
 			
 			note.play(player1, 0);
-			player2.addNote(new Pitch('C').transpose(-1).toMidiNote(), 0, 4);
+			player2.addNote(new Pitch('E').transpose(-1).toMidiNote(), 0, 4);
 			assertEquals(player1.toString(), player2.toString());
 		} catch(MidiUnavailableException mue) {
 			fail(mue.getStackTrace().toString());
@@ -201,15 +208,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers flat pitch, fractional duration
+	// this test covers flat pitch, duration is fractional number of beats with numerator 1
 	@Test
 	public void testNoteFlatFractionalDuration() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(1, new Pitch('C').transpose(-1));
-			assertTrue(.25 == note.getDuration());
+			Note note = new Note(4, ticksPerBeat, new Pitch('C').transpose(-1));
+			assertTrue(1 == note.getDuration());
 			assertTrue(note.toString().equals("_C1/4") || note.toString().equals("_C/4"));
 			
 			note.play(player1, 0);
@@ -222,19 +230,20 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers flat pitch, fractional duration with numerator n
+	// this test covers flat pitch, duration is fractional number of beats with numerator n
 		@Test
 		public void testNoteFlatFractionalDurationNumeratorN() {
 			try {
-				SequencePlayer player1 = new SequencePlayer(100, 4);
-				SequencePlayer player2 = new SequencePlayer(100, 4);
+				final int ticksPerBeat = 4;
+				SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+				SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 				
-				Note note = new Note(1, new Pitch('C').transpose(-1));
-				assertTrue(.75 == note.getDuration());
-				assertTrue(note.toString().equals("_C3/4"));
+				Note note = new Note(3, ticksPerBeat, new Pitch('E').transpose(-1));
+				assertTrue(3 == note.getDuration());
+				assertTrue(note.toString().equals("_E3/4"));
 				
 				note.play(player1, 0);
-				player2.addNote(new Pitch('C').transpose(-1).toMidiNote(), 0, 3);
+				player2.addNote(new Pitch('E').transpose(-1).toMidiNote(), 0, 3);
 				assertEquals(player1.toString(), player2.toString());
 			} catch(MidiUnavailableException mue) {
 				fail(mue.getStackTrace().toString());
@@ -243,15 +252,16 @@ public class NoteTest {
 			}
 		}
 	
-	// this test covers sharp pitch, fractional duration, note up one octave
+	// this test covers sharp pitch, duration is fractional number of beats with numerator 1, note up one octave
 	@Test
 	public void testNoteUpOneOctave() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(.25, new Pitch('C').transpose(Pitch.OCTAVE + 1));
-			assertTrue(.25 == note.getDuration());
+			Note note = new Note(1, ticksPerBeat, new Pitch('C').transpose(Pitch.OCTAVE + 1));
+			assertTrue(1 == note.getDuration());
 			assertTrue(note.toString().equals("^c1/4") || note.toString().equals("^c/4"));
 			
 			note.play(player1, 0);
@@ -264,15 +274,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers flat pitch, fractional duration, note up n octaves
+	// this test covers flat pitch, duration is fractional number of beats with numerator 1, note up n octaves
 	@Test
 	public void testNoteUpMultipleOctaves() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(.25, new Pitch('E').transpose(Pitch.OCTAVE*2 - 1));
-			assertTrue(.25 == note.getDuration());
+			Note note = new Note(1, ticksPerBeat, new Pitch('E').transpose(Pitch.OCTAVE*2 - 1));
+			assertTrue(1 == note.getDuration());
 			assertTrue(note.toString().equals("_E''1/4") || note.toString().equals("_E''/4"));
 			
 			note.play(player1, 0);
@@ -285,15 +296,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers natural pitch, integer duration, note down 1 octave
+	// this test covers natural pitch, duration is integer number of beats, note down 1 octave
 	@Test
 	public void testNoteDownOneOctave() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(2, new Pitch('C').transpose(-1*Pitch.OCTAVE));
-			assertTrue(2 == note.getDuration());
+			Note note = new Note(8, ticksPerBeat, new Pitch('C').transpose(-1*Pitch.OCTAVE));
+			assertTrue(8 == note.getDuration());
 			assertTrue(note.toString().equals("C,1/4") || note.toString().equals("C,/4"));
 			
 			note.play(player1, 0);
@@ -306,15 +318,16 @@ public class NoteTest {
 		}
 	}
 	
-	// this test covers sharp pitch, fractional duration with numerator n, note down n octaves
+	// this test covers sharp pitch, duration is fractional number of beats with numerator n, note down n octaves
 	@Test
 	public void testNoteDownMultipleOctaves() {
 		try {
-			SequencePlayer player1 = new SequencePlayer(100, 4);
-			SequencePlayer player2 = new SequencePlayer(100, 4);
+			final int ticksPerBeat = 4;
+			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
+			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			
-			Note note = new Note(1.25, new Pitch('C').transpose(-2*Pitch.OCTAVE + 1));
-			assertTrue(1.25 == note.getDuration());
+			Note note = new Note(5, ticksPerBeat, new Pitch('C').transpose(-2*Pitch.OCTAVE + 1));
+			assertTrue(5 == note.getDuration());
 			assertTrue(note.toString().equals("^C,,5/4"));
 			
 			note.play(player1, 0);
