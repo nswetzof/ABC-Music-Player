@@ -54,10 +54,16 @@ public class Rest implements Music {
 	 */
 	@Override
 	public String toString() {
-		if(this.getDuration() == (int)(this.getDuration()))
-			return "." + (int)(this.getDuration());
+		int dur = this.getDuration();
+
+		if(dur % this.ticksPerBeat == 0)
+			return "." + dur / this.ticksPerBeat;
 		
-		return "." + Music.fractionToString(this.getDuration());
+		else {
+			int gcd = Music.greatestCommonDivisor(dur, this.ticksPerBeat);
+			
+			return "." + (dur / gcd) + "/" + (this.ticksPerBeat / gcd);
+		}
 	}
 	
 	private void checkRep() {
