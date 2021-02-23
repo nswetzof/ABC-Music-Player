@@ -6,42 +6,42 @@
 grammar Structure;
 import Configuration;
 
-root: header EOL* body EOF
+root: header EOL* body EOF;
 
-header: field-number comment* field-title other-fields* field-key
+header: field_number comment* field_title other_fields* field_key;
 
-field-number: 'X:' DIGIT+ EOL
-comment: '%' TEXT EOL
-field-title: 'T:' TEXT EOL
-other-fields: field-composer | field-default-length | field-meter | field-tempo | field-voice | comment
-field-composer: 'C:' TEXT EOL
-field-default-length: 'L:' note-length-strict EOL
-field-meter: 'M:' meter EOL
-field-tempo: 'Q:' tempo EOL
-field-voice: 'V:' TEXT EOL
-field-key: 'K:' key EOL
+field_number: 'X:' DIGIT+ EOL;
+comment: '%' TEXT EOL;
+field_title: 'T:' TEXT EOL;
+other_fields: field_composer | field_default_length | field_meter | field_tempo | field_voice | comment;
+field_composer: 'C:' TEXT EOL;
+field_default_length: 'L:' note_length_strict EOL;
+field_meter: 'M:' meter EOL;
+field_tempo: 'Q:' tempo EOL;
+field_voice: 'V:' TEXT EOL;
+field_key: 'K:' key EOL;
 
-note-length-strict: DIGIT+ '/' DIGIT+
-meter: 'C' | 'C|' | meter-fraction
-meter-fraction: DIGIT+ '/' DIGIT+
-tempo: meter-fraction "=" DIGIT+
+note_length_strict: DIGIT+ '/' DIGIT+;
+meter: 'C' | 'C|' | meter_fraction;
+meter_fraction: DIGIT+ '/' DIGIT+;
+tempo: meter_fraction '=' DIGIT+;
 
-key: keynote MODE-MINOR?
-keynote: BASENOTE KEY-ACCIDENTAL?
+key: keynote MODE_MINOR?;
+keynote: BASENOTE KEY_ACCIDENTAL?;
 
-;whitespace: \b* EOL
+/*whitespace: \b* EOL;*/
 
-body: line (EOL line)* EOF
+body: LINE (EOL LINE)* EOF;
 
-line: [\w\b[]|:]
-;line: ([^_] BASENOTE ('\''* | ','*) meter-fraction?)+ | [\[]:]
+LINE: [a-zA-Z0-9\[\]|:];
+/*line: ([^_] BASENOTE ('\''* | ','*) meter_fraction?)+ | [\[]:];*/
 
-DIGIT: \d
-TEXT: [a-zA-Z][ a-zA-Z]*
-KEY-ACCIDENTAL: [#b]
-MODE-MINOR: 'm'
-BASENOTE: [A-Fa-f]
-EOL: \n | \r\n?
+DIGIT: [0-9];
+TEXT: [a-zA-Z][ a-zA-Z]*;
+KEY_ACCIDENTAL: [#b];
+MODE_MINOR: 'm';
+BASENOTE: [A-Fa-f];
+EOL: '\n' | '\r''\n'?;
 
 PLUS: '+';
 
