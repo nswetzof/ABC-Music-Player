@@ -58,6 +58,7 @@ public class Note implements Music {
 		player.addNote(pitch.toMidiNote(), atTick, this.getDuration());
 	}
 	
+	// TODO: if numerator in a fraction is equal to 1, don't want to show (same for rests)
 	/**
 	 * @return if 0 duration, then empty string;
 	 * 	otherwise string representation of the note in abc format followed by duration. If duration is fractional, the

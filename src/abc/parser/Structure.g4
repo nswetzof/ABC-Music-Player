@@ -6,13 +6,12 @@
 grammar Structure;
 import Configuration;
 
-root: header EOL* body;
+root: header EOL* BODY;
 
 header: (HEADER_LINE EOL)+;
 HEADER_LINE: [CKLMQTX] ':' ~[\r\n]+;
 
-body: (BODY_LINE (EOL | EOF))+;
-BODY_LINE: ~[\r\n] ~[:] ~[\r\n]+ | '|:' ~[\r\n]+;
+BODY: (~[\r\n] ~[:] | '|:') .*? EOF;
 
 EOL: '\n' | '\r' '\n'?;
 
