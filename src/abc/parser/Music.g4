@@ -6,7 +6,7 @@
 grammar Music;
 import Configuration;
 
-root: header EOL* body;
+root: header EOL*;
 
 header: field_number comment* field_title other_fields* field_key;
 
@@ -16,7 +16,7 @@ field_title: 'T:' TEXT (DIGIT | TEXT)* EOL;
 other_fields: field_composer | field_default_length | field_meter | field_tempo | field_voice | comment;
 field_composer: 'C:' TEXT EOL;
 field_default_length: 'L:' note_length_strict EOL;
-field_meter: 'M:' ('C' | 'C|' | meter) EOL;
+field_meter: 'M' (':C' | ':C|' | ':' meter) EOL;
 field_tempo: 'Q:' tempo EOL;
 field_voice: 'V:' TEXT EOL;
 field_key: 'K:' key EOL;
@@ -30,7 +30,6 @@ key: keynote MODE_MINOR?;
 keynote: BASENOTE KEY_ACCIDENTAL?;
 
 /*whitespace: \s* EOL;*/
-
 
 /* Music */
 
