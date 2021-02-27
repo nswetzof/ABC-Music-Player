@@ -73,7 +73,7 @@ NTH_REPEAT: '[1' | '[2';
 
 /********** General tokens **********/
 DIGIT: [0-9];
-BASENOTE: [A-Fa-f];
+BASENOTE: [A-Ga-g];
 EOL: '\n' | '\r''\n'?;
 
 PLUS: '+';
