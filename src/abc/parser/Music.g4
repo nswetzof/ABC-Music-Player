@@ -6,7 +6,7 @@
 grammar Music;
 import Configuration;
 
-root: header EOL*;
+root: header EOL* body;
 
 header: field_number comment* field_title other_fields* field_key;
 
@@ -28,8 +28,6 @@ tempo: meter_fraction '=' DIGIT+;
 
 key: keynote MODE_MINOR?;
 keynote: BASENOTE KEY_ACCIDENTAL?;
-
-/*whitespace: \s* EOL;*/
 
 /* Music */
 
