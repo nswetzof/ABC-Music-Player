@@ -6,7 +6,7 @@
 grammar Structure;
 import Configuration;
 
-root: header EOL* BODY;
+root: header EOL* body;
 
 header: field_number comment* field_title other_fields* field_key;
 
@@ -16,7 +16,7 @@ field_title: 'T:' TEXT (DIGIT | TEXT)* EOL;
 other_fields: field_composer | field_default_length | field_meter | field_tempo | field_voice | comment;
 field_composer: 'C:' TEXT EOL;
 field_default_length: 'L:' note_length_strict EOL;
-field_meter: 'M:' ('C' | 'C|' | meter) EOL;
+field_meter: 'M' (':C' | ':C|' | ':' meter) EOL;
 field_tempo: 'Q:' tempo EOL;
 field_voice: 'V:' TEXT EOL;
 field_key: 'K:' key EOL;
@@ -29,14 +29,17 @@ tempo: meter_fraction '=' DIGIT+;
 key: keynote MODE_MINOR?;
 keynote: BASENOTE KEY_ACCIDENTAL?;
 
-BODY: ([a-zA-Z_^|(] ~[:\r\n] | '|:' | '||:') .*? EOF;
+//BODY: ([a-zA-Z_^|(] ~[:\r\n] | '|:' | '||:') .*? EOF;
+body: (~FIELD_LETTER | ~comment | BARLINE) .*? EOF;
+FIELD_LETTER: [XTCLMQVK] ':';
+BARLINE: '|' | '||' | '[|' | '|]' | ':|' | '|:';
 
-DIGIT: [0-9];
-TEXT: [a-zA-Z][. a-zA-Z]+;
 KEY_ACCIDENTAL: [#b];
 MODE_MINOR: 'm';
-BASENOTE: [A-Fa-f];
-EOL: '\n' | '\r' '\n'?;
+TEXT: [a-zA-Z][. a-zA-Z]+;
+DIGIT: [0-9];
+BASENOTE: [A-Ga-g];
+EOL: '\n' | '\r''\n'?;
 
 /* Tell Antlr to ignore spaces around tokens. */
 SPACES: [ ] -> skip;
