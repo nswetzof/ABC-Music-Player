@@ -19,6 +19,10 @@ import abc.parser.StructureLexer;
 import abc.parser.StructureListener;
 import abc.parser.StructureParser;
 
+import abc.parser.MusicLexer;
+import abc.parser.MusicListener;
+import abc.parser.MusicParser;
+
 /**
  * Main entry point of your application.
  */
