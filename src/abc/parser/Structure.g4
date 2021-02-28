@@ -29,10 +29,7 @@ tempo: meter_fraction '=' DIGIT+;
 key: keynote MODE_MINOR?;
 keynote: BASENOTE KEY_ACCIDENTAL?;
 
-//BODY: ([a-zA-Z_^|(] ~[:\r\n] | '|:' | '||:') .*? EOF;
-//body: EOL (~FIELD_LETTER ':' | ~'%' .*? EOL | BARLINE) .*? EOF;
-body: (BARLINE ~':' | '(' | ACCIDENTAL | 'z' | '[' | BASENOTE) .*? EOF;
-FIELD_LETTER: [XTCLMQVK] ':';
+body: (BARLINE | '(' | ACCIDENTAL | 'z' | '[' | BASENOTE ~':') (. | ']')*? EOF;
 BARLINE: '|' | '||' | '[|' | '|]' | ':|' | '|:';
 
 ACCIDENTAL: [=^_];
