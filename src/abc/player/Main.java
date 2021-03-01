@@ -18,10 +18,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import abc.parser.StructureLexer;
 import abc.parser.StructureListener;
 import abc.parser.StructureParser;
-
+import abc.parser.MusicBaseListener;
 import abc.parser.MusicLexer;
 import abc.parser.MusicListener;
 import abc.parser.MusicParser;
+import abc.parser.StructureBaseListener;
 
 /**
  * Main entry point of your application.
@@ -43,18 +44,22 @@ public class Main {
 
     public static void main(String[] args) {
     	try {
-	    	FileInputStream in = new FileInputStream("sample_abc/piece2.abc");
+	    	FileInputStream in = new FileInputStream("sample_abc/fur_elise.abc");
 	    	CharStream stream = new ANTLRInputStream(in);
 	    	
-	    	StructureLexer lexer = new StructureLexer(stream);
+	    	MusicLexer lexer = new MusicLexer(stream);
 	    	TokenStream tokens = new CommonTokenStream(lexer);
 	    	
-	    	StructureParser parser = new StructureParser(tokens);
+	    	MusicParser parser = new MusicParser(tokens);
 	    	ParseTree tree = parser.root();
 	    	
 	    	System.err.println(tree.toStringTree(parser));
 	    	
 	    	Trees.inspect(tree, parser);
+	    	
+	    	ParseTreeWalker walker = new ParseTreeWalker();
+	    	MusicListener listener = new MusicBaseListener();
+	    	walker.walk(listener, tree);
 	    	
     	} catch(FileNotFoundException fnfe) {
     		System.err.println(fnfe.getMessage());
