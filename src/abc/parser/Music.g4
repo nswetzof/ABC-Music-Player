@@ -11,7 +11,7 @@ root: header EOL* body;
 header: field_number comment* FIELD_TITLE other_fields* field_key;
 
 field_number: 'X:' DIGIT+ EOL;
-comment: '%' .+? EOL;
+comment: '%' .*? EOL;
 FIELD_TITLE: 'T:' .+? EOL;
 other_fields: FIELD_COMPOSER | field_default_length | field_meter | field_tempo | field_voice | comment;
 FIELD_COMPOSER: 'C:' [a-zA-Z .]+ EOL;
@@ -24,7 +24,7 @@ field_key: 'K:' key EOL;
 note_length_strict: DIGIT+ '/' DIGIT+;
 meter: meter_fraction;
 meter_fraction: DIGIT+ '/' DIGIT+;
-tempo: meter_fraction '=' DIGIT+;
+tempo: meter_fraction EQUALS DIGIT+;
 
 key: keynote MODE_MINOR?;
 keynote: BASENOTE KEY_ACCIDENTAL?;
@@ -39,7 +39,7 @@ note_element: note | multi_note;
 
 note: note_or_rest note_length?;
 note_or_rest: pitch | REST;
-pitch: ACCIDENTAL? BASENOTE OCTAVE?;
+pitch: accidental? BASENOTE OCTAVE?;
 /*note_length: (DIGIT+)? ('/' (DIGIT+)?)?;*/
 note_length: DIGIT+ ('/' DIGIT+)? | '/' DIGIT+;
 
@@ -64,7 +64,7 @@ MODE_MINOR: 'm';
 /********** Music tokens **********/
 
 /* "^" is sharp, "_" is flat, and "=" is neutral */
-ACCIDENTAL: '^' | '^^' | '_' | '__' | '=';
+accidental: '^' | '^^' | '_' | '__' | EQUALS;
 
 OCTAVE: '\''+ | ','+ ;
 REST: 'z';
@@ -74,6 +74,7 @@ NTH_REPEAT: '[1' | '[2';
 /********** General tokens **********/
 DIGIT: [0-9];
 BASENOTE: [A-Ga-g];
+EQUALS: '=';
 EOL: '\n' | '\r''\n'?;
 
 PLUS: '+';
