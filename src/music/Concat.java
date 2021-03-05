@@ -44,6 +44,9 @@ public class Concat implements Music {
 	 * The time per tick is defined in the player parameter's fields. 
 	 */
 	public void play(SequencePlayer player, int atTick) {
+		first.setTicksPerBeat(this.ticksPerBeat); // TODO: add code to handle ticksPerBeat
+		second.setTicksPerBeat(this.ticksPerBeat);
+		
 		first.play(player, atTick);
 		second.play(player, atTick + first.getDuration());
 	}

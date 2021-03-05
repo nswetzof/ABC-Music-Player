@@ -56,6 +56,7 @@ public class Chord implements Music {
 	@Override
 	public void play(SequencePlayer player, int atTick) {
 		for(Note note : this.notes)
+			note.setTicksPerBeat(this.ticksPerBeat);
 			player.addNote(note.getPitch().toMidiNote(), atTick, note.getDuration());
 	}
 	
