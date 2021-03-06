@@ -7,82 +7,12 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import abc.sound.SequencePlayer;
-import music.Music;
+import music.*;
 
-/** Stores information found in the header of an abc file **/
-class Header {
-	private int index;
-	private String title;
-	private String composer;
-	private List<Integer> meter;
-	private int tempo;
-	private String key;
-	
-	public Header() {
-		this.index = 0;
-		this.title = "";
-		this.composer = "Unknown";
-		this.meter.add(4);
-		this.meter.add(4);
-		this.tempo = 100;
-		this.key = "";
-	}
-	
-	public int getIndex() {
-		return index;
-	}
-	
-	public String getTitle() {
-		return title;
-	}
-	
-	public String getComposer() {
-		return composer;
-	}
-	
-	public List<Integer> getMeter() {
-		return meter;
-	}
-	
-	public int getTempo() {
-		return tempo;
-	}
-	
-	public String getKey() {
-		return key;
-	}
-	
-	public void setIndex(int i) {
-		this.index = i;
-	}
-	
-	public void setTitle(String t) {
-		this.title = t;
-	}
-	
-	public void setComposer(String c) {
-		this.composer = c;
-	}
-	
-	public void setMeter(int num, int denom) {
-		assert(meter.size() == 2);
-		
-		this.meter.set(0, num);
-		this.meter.set(1, denom);
-	}
-	
-	public void setTempo(int t) {
-		this.tempo = t;
-	}
-	
-	public void setKey(String k) {
-		this.key = k;
-	}
-}
 
 public class MakeSong extends MusicBaseListener {
 	private Stack<Music> stack = new Stack<Music>();
-	Header header = new Header();
+	Song song = new Song();
 	
 	/**
 	 * @return SequencePlayer object initialized using information contained in the abc file
