@@ -18,7 +18,8 @@ public interface Music {
 	public int getTicksPerBeat(); // TODO: There will be some rep invariants with this field for Chord and Concat at least
 	
 	/**
-	 * Set the number of ticks per beat.
+	 * Set the number of ticks per beat.  Walk through all member Music objects and set ticks per beat to 'ticks'
+	 * 	for each of them recursively.
 	 */
 	public void setTicksPerBeat(int ticks);
 	
