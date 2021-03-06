@@ -34,7 +34,8 @@ class Pair<T, U> {
 	}
 }
 
-/** Represents all the header and body information necessary to create a MIDI song. **/ 
+/** Represents all the header and body information necessary to create a MIDI song.
+ * 	The composer is labelled as 'Unknown' unless otherwise specified. **/ 
 public class Song {
 	private Map<String, Music> voices;
 	
