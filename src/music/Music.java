@@ -47,24 +47,4 @@ public interface Music {
 		
 		return gcd;
 	}
-	
-	/**
-	 * Parses an abc file and converts it to a Music object
-	 * @param file name and path of abc file for the parser to interpret
-	 * @return Music object with properties and musical components defined in file
-	 * @throws IOException if error opening file
-	 */
-	public static Music parse(String file) throws IOException {
-		
-		throw new RuntimeException("not implemented");
-	}
-	
-	/**
-	 * Parses a String and converts it to a Music object.
-	 * @param abcString String representing the contents of an abc file
-	 * @return Music object with properties and musical components defined in abcString
-	 */
-	public static Music parseString(String abcString) {
-		throw new RuntimeException("not implemented");
-	}
 }

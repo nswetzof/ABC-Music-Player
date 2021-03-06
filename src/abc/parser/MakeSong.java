@@ -1,6 +1,7 @@
 package abc.parser;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -12,14 +13,17 @@ import music.*;
 
 public class MakeSong extends MusicBaseListener {
 	private Stack<Music> stack = new Stack<Music>();
-	Song song = new Song();
+	private Stack<Integer> intStack = new Stack<Integer>();
 	
-	/**
-	 * @return SequencePlayer object initialized using information contained in the abc file
-	 */
-	public SequencePlayer getPlayer() {
-		throw new RuntimeException("not implemented");
-	}
+	Song song = new Song();
+	private String currentVoice = "";
+	
+//	/**
+//	 * @return SequencePlayer object initialized using information contained in the abc file
+//	 */
+//	public SequencePlayer getPlayer() {
+//		throw new RuntimeException("not implemented");
+//	}
 	
 	/**
 	 * @return a Music object and header information that can be fed to a SequencePlayer object.
@@ -70,7 +74,12 @@ public class MakeSong extends MusicBaseListener {
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void exitField_number(MusicParser.Field_numberContext ctx) { }
+	  @Override public void exitField_number(MusicParser.Field_numberContext ctx) {
+		  Stream<String> digits = ctx.DIGIT().stream().map((x) -> x.toString());
+		  int index = Integer.valueOf(digits.reduce((x, y) -> x + y).get());
+		  
+		  song.setIndex(index);
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *

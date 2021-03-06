@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import abc.parser.StructureLexer;
 import abc.parser.StructureListener;
 import abc.parser.StructureParser;
+import abc.parser.MakeSong;
 import abc.parser.MusicBaseListener;
 import abc.parser.MusicLexer;
 import abc.parser.MusicListener;
@@ -44,7 +45,7 @@ public class Main {
 
     public static void main(String[] args) {
     	try {
-	    	FileInputStream in = new FileInputStream("sample_abc/fur_elise.abc");
+	    	FileInputStream in = new FileInputStream("sample_abc/prelude.abc");
 	    	CharStream stream = new ANTLRInputStream(in);
 	    	
 	    	MusicLexer lexer = new MusicLexer(stream);
@@ -57,9 +58,12 @@ public class Main {
 	    	
 	    	Trees.inspect(tree, parser);
 	    	
-	    	ParseTreeWalker walker = new ParseTreeWalker();
-	    	MusicListener listener = new MusicBaseListener();
-	    	walker.walk(listener, tree);
+	    	MakeSong songMaker = new MakeSong();
+	    	new ParseTreeWalker().walk(songMaker, tree);
+//	    	
+//	    	ParseTreeWalker walker = new ParseTreeWalker();
+//	    	MusicListener listener = new MusicBaseListener();
+//	    	walker.walk(listener, tree);
 	    	
     	} catch(FileNotFoundException fnfe) {
     		System.err.println(fnfe.getMessage());
