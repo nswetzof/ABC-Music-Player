@@ -1,10 +1,9 @@
 package music;
 
-import static org.junit.Assert.assertTrue;
-
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
 
 import abc.sound.SequencePlayer;
 
@@ -36,7 +35,7 @@ class Pair<T, U> {
 
 /** Represents all the header and body information necessary to create a MIDI song. **/ 
 public class Song {
-	private Music music;
+	private Map<String, Music> voices;
 	SequencePlayer player; // TODO: confirm we need
 	
 	// header information
@@ -58,13 +57,12 @@ public class Song {
 	 * Safety from rep exposure:
 	 * 	all fields are private;
 	 * 	meter is mutable so defensive copying is utilized to avoid exposure to clients;
-	 * 	music is mutable so getMusic utilizes defensive copying to avoid exposure to clients;
-	 * 	the constructor mutates music but that information is not taken directly from
-	 * 		any parameters so it is not exposed;
+	 * 	the values of voices are mutable but are never returned or copied by any method;
+	 * 	addVoice only passes a key for voices as a parameter, which are immutable
 	 */
 	
 	public Song() {
-		this.music = new Rest(0, 1); // TODO: confirm
+		this.voices = new HashMap<String, Music>();
 		
 		this.index = 0;
 		this.title = "";
@@ -122,6 +120,13 @@ public class Song {
 	 */
 	public String getKey() {
 		return key;
+	}
+	
+	/**
+	 * @return the set of names of all voices present in the Song
+	 */
+	public Set<String> getVoiceNames() {
+		return voices.keySet();
 	}
 	
 	/**
@@ -199,6 +204,15 @@ public class Song {
 		checkRep();
 	}
 	
+	public boolean addVoice(String voiceName) {
+		if(voices.containsKey(voiceName))
+			return false;
+		
+		voices.put(voiceName, new Rest(0, 1)); // TODO: verify
+		
+		return true;
+	}
+	
 	/** Print header information of song
 	 */
 	public void printHeader() {
@@ -217,7 +231,7 @@ public class Song {
 	}
 	
 	private void checkRep() {
-		assert(music != null);
+		assert(voices != null);
 		assert(title != null);
 		assert(composer != null);
 		assert(meter != null);
