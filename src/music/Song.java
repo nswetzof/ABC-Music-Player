@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import abc.sound.SequencePlayer;
 
+/** Represents a generic pair of values **/
 class Pair<T, U> {
 	private T First;
 	private U Second;
@@ -36,7 +37,6 @@ class Pair<T, U> {
 /** Represents all the header and body information necessary to create a MIDI song. **/ 
 public class Song {
 	private Map<String, Music> voices;
-	SequencePlayer player; // TODO: confirm we need
 	
 	// header information
 	private int index;
@@ -51,14 +51,19 @@ public class Song {
 	 * Rep invariant:
 	 * 	all fields are non-null;
 	 * 	key must be in the set of major and minor keys in western musical notation
+	 * 	voices.size() > 0
 	 * Abstraction function:
-	 * 	Represents a song with notes defined in 'music' and header information obtained from an abc file
-	 * 		defined in the remaining fields.
+	 * 	Represents a song with a certain number of voices represented by the 'voices' map where keys represent voice
+	 * 		names and values represent the notes associated with those voices. Information which would be displayed
+	 * 		in the header of an abc file is represented in the remaining fields.
 	 * Safety from rep exposure:
 	 * 	all fields are private;
 	 * 	meter is mutable so defensive copying is utilized to avoid exposure to clients;
 	 * 	the values of voices are mutable but are never returned or copied by any method;
 	 * 	addVoice only passes a key for voices as a parameter, which are immutable
+	 * 
+	 * TODO: might be able to have play method which concurrently calls the play methods for each Music object in voices;
+	 * 		 would have to figure out what needs to be atomic
 	 */
 	
 	public Song() {
@@ -219,6 +224,21 @@ public class Song {
 		
 	}
 	
+	/** 
+	 * Add musical element to the song
+	 * @param voice name of voice which will play the musical element
+	 */
+	public void addElement(String voiceName) {
+		
+	}
+	
+	/**
+	 * Play the song represented by this object
+	 */
+	public void play() {
+		// TODO: will create SequencePlayer object here
+	}
+	
 	/**
 	 * Parses an abc file and converts it to a Music object
 	 * @param file name and path of abc file for the parser to interpret
@@ -231,7 +251,7 @@ public class Song {
 	}
 	
 	private void checkRep() {
-		assert(voices != null);
+		assert(voices.size() > 0);
 		assert(title != null);
 		assert(composer != null);
 		assert(meter != null);
