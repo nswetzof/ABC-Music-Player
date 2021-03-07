@@ -75,23 +75,25 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitField_number(MusicParser.Field_numberContext ctx) {
-		  Stream<String> digits = ctx.DIGIT().stream().map((x) -> x.toString());
-		  int index = Integer.valueOf(digits.reduce((x, y) -> x + y).get());
-		  
-		  song.setIndex(index);
+		  song.setIndex(Integer.valueOf(digitToString(ctx.DIGIT())));
 	  }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterComment(MusicParser.CommentContext ctx) { }
+
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitComment(MusicParser.CommentContext ctx) { }
+	  
+	  /**
+	   * {@inheritDoc}
+	   *
+	   * <p>The default implementation does nothing.</p>
+	   */
+	  @Override public void exitField_title(MusicParser.Field_titleContext ctx) {
+		  song.setTitle(ctx.TITLE().toString().substring(2).strip());
+	  }
+	  
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -104,18 +106,28 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitOther_fields(MusicParser.Other_fieldsContext ctx) { }
+	  
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void enterField_default_length(MusicParser.Field_default_lengthContext ctx) { }
+	  @Override public void exitField_composer(MusicParser.Field_composerContext ctx) {
+		  song.setComposer(ctx.COMPOSER().toString().substring(2).strip());
+	  }
+	  
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void exitField_default_length(MusicParser.Field_default_lengthContext ctx) { }
+	  @Override public void exitField_default_length(MusicParser.Field_default_lengthContext ctx) {()
+		  System.out.println("DIGIT: " + ctx.note_length_strict().getText());
+		  double numerator = Double.valueOf(ctx.note_length_strict().DIGIT().get(0).toString());
+		  double denominator = Double.valueOf(ctx.note_length_strict().DIGIT().get(1).toString());
+		  
+		  song.setLength(numerator / denominator);
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -127,7 +139,9 @@ public class MakeSong extends MusicBaseListener {
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void exitField_meter(MusicParser.Field_meterContext ctx) { }
+	  @Override public void exitField_meter(MusicParser.Field_meterContext ctx) {
+		  
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -176,42 +190,36 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitNote_length_strict(MusicParser.Note_length_strictContext ctx) { }
+
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void enterMeter(MusicParser.MeterContext ctx) { }
+	  @Override public void exitMeter(MusicParser.MeterContext ctx) {
+		  song.setMeter(Integer.valueOf(ctx.meter_fraction().DIGIT().get(0).toString()),
+				  Integer.valueOf(ctx.meter_fraction().DIGIT().get(1).toString()));
+	  }
+
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void exitMeter(MusicParser.MeterContext ctx) { }
+	  @Override public void exitMeter_fraction(MusicParser.Meter_fractionContext ctx) {  }
+
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void enterMeter_fraction(MusicParser.Meter_fractionContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitMeter_fraction(MusicParser.Meter_fractionContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterTempo(MusicParser.TempoContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitTempo(MusicParser.TempoContext ctx) { }
+	  @Override public void exitTempo(MusicParser.TempoContext ctx) {
+		  song.setTempo(Double.valueOf(ctx.meter_fraction().DIGIT().get(0).toString()) /
+				  Double.valueOf(ctx.meter_fraction().DIGIT().get(1).toString()), 
+				  Integer.valueOf(ctx.DIGIT().toString()));
+		  
+//		  System.out.println(ctx.meter_fraction().DIGIT().toString());
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -417,4 +425,13 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void visitErrorNode(ErrorNode node) { }
+	  
+	   // convert a list of String literals in a DIGIT terminal into a string representing the number
+	  private String digitToString(List<TerminalNode> l) {
+		  String number = l.stream()
+				  .map((x) -> x.toString())
+				  .reduce("", (x, y) -> x + y);
+		  
+		  return number;
+	  }
 }

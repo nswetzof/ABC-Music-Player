@@ -12,7 +12,7 @@ header: field_number comment* field_title other_fields* field_key;
 
 field_number: 'X:' DIGIT+ EOL;
 comment: '%' .*? EOL;
-field_title: TITLE EOL;
+field_title: TITLE;
 other_fields: field_composer | field_default_length | field_meter | field_tempo | field_voice | comment;
 field_composer: COMPOSER EOL;
 field_default_length: 'L:' note_length_strict EOL;
@@ -59,8 +59,8 @@ mid_tune_field: field_voice;
 /********** Header tokens **********/
 KEY_ACCIDENTAL: [#b];
 MODE_MINOR: 'm';
-TITLE: 'T:' .+?;
-COMPOSER: 'C:' [a-zA-Z .]+
+TITLE: 'T:' .*? EOL;
+COMPOSER: 'C:' [a-zA-Z .]+;
 /*TEXT: [a-zA-Z][. a-zA-Z]+;*/
 
 /********** Music tokens **********/
