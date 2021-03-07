@@ -1,10 +1,24 @@
 package music;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
+
+import org.antlr.v4.gui.Trees;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+
 import java.util.HashMap;
 
+import abc.parser.MakeSong;
+import abc.parser.MusicLexer;
+import abc.parser.MusicParser;
 import abc.sound.SequencePlayer;
 
 /** Represents a generic pair of values **/
@@ -74,7 +88,7 @@ public class Song {
 		this.title = "";
 		this.composer = "Unknown";
 		this.meter = new Pair<Integer, Integer>(4, 4);
-		this.length = 1/8;
+		this.length = 1.0/8;
 		this.tempo = new Pair<Double, Integer>(this.length, 100);
 		this.key = "";
 	}
@@ -115,6 +129,13 @@ public class Song {
 	}
 	
 	/**
+	 * @return meter expressed as a double value
+	 */
+	public double getMeterAsValue() {
+		return (double)(this.meter.first()) / (double)(this.meter.second());
+	}
+	
+	/**
 	 * @return tempo of Song
 	 */
 	public Pair<Double, Integer> getTempo() {
@@ -141,8 +162,6 @@ public class Song {
 	 */
 	public void setIndex(int i) {
 		this.index = i;
-		
-		checkRep();
 	}
 	
 	/**
@@ -151,8 +170,6 @@ public class Song {
 	 */
 	public void setTitle(String t) {
 		this.title = t;
-		
-		checkRep();
 	}
 	
 	/**
@@ -161,8 +178,6 @@ public class Song {
 	 */
 	public void setComposer(String c) {
 		this.composer = c;
-		
-		checkRep();
 	}
 	
 	/**
@@ -171,8 +186,6 @@ public class Song {
 	 */
 	public void setLength(double l) {
 		this.length = l;
-		
-		checkRep();
 	}
 	
 	/**
@@ -183,8 +196,6 @@ public class Song {
 	public void setMeter(int num, int denom) {		
 		this.meter.setFirst(num);
 		this.meter.setSecond(denom);
-		
-		checkRep();
 	}
 	
 	/**
@@ -195,8 +206,6 @@ public class Song {
 	public void setTempo(double length, int beatsPerMinute) {
 		this.tempo.setFirst(length);
 		this.tempo.setSecond(beatsPerMinute);
-		
-		checkRep();
 	}
 	
 	/**
@@ -206,15 +215,15 @@ public class Song {
 	 */
 	public void setKey(String k) {
 		this.key = k;
-		
-		checkRep();
 	}
 	
 	public boolean addVoice(String voiceName) {
 		if(voices.containsKey(voiceName))
 			return false;
 		
-		voices.put(voiceName, new Rest(0, 1)); // TODO: verify
+		voices.put(voiceName, new Rest(0, 1));
+		
+		checkRep();
 		
 		return true;
 	}
@@ -247,8 +256,29 @@ public class Song {
 	 * @throws IOException if error opening file
 	 */
 	public static Song parse(String file) throws IOException {
+		try {
+	    	CharStream stream = new ANTLRInputStream(new FileInputStream(file));
+	    	
+	    	MusicLexer lexer = new MusicLexer(stream);
+	    	TokenStream tokens = new CommonTokenStream(lexer);
+	    	
+	    	MusicParser parser = new MusicParser(tokens);
+	    	ParseTree tree = parser.root();
+	    	
+	    	MakeSong songMaker = new MakeSong();
+	    	new ParseTreeWalker().walk(songMaker, tree);
+	    	
+	    	return songMaker.getSong();
+	    	
+    	} catch(FileNotFoundException fnfe) {
+    		System.err.println(fnfe.getMessage());
+    		System.exit(0);
+    	} catch(IOException ioe) {
+    		System.err.println(ioe.getMessage());
+    		System.exit(0);
+    	}
 		
-		throw new RuntimeException("not implemented");
+		return null;
 	}
 	
 	private void checkRep() {
