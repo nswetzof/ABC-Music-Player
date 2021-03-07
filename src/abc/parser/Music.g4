@@ -41,7 +41,7 @@ note: note_or_rest note_length?;
 note_or_rest: pitch | REST;
 pitch: accidental? BASENOTE OCTAVE?;
 /*note_length: (DIGIT)? ('/' (DIGIT)?)?;*/
-note_length: DIGIT ('/' DIGIT)? | '/' DIGIT;
+note_length: DIGIT | DIGIT? '/' DIGIT?;
 
 /* tuplets */
 tuplet_element: tuplet_spec note_element+;
