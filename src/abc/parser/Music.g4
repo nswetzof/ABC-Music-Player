@@ -10,7 +10,7 @@ root: header EOL* body;
 
 header: field_number comment* field_title other_fields* field_key;
 
-field_number: 'X:' DIGIT+ EOL;
+field_number: 'X:' DIGIT EOL;
 comment: '%' .*? EOL;
 field_title: TITLE;
 other_fields: field_composer | field_default_length | field_meter | field_tempo | field_voice | comment;
@@ -21,10 +21,10 @@ field_tempo: 'Q:' tempo EOL;
 field_voice: 'V:' ~EOL+? EOL;
 field_key: 'K:' key EOL;
 
-note_length_strict: DIGIT+ '/' DIGIT+;
+note_length_strict: DIGIT '/' DIGIT;
 meter: meter_fraction;
-meter_fraction: DIGIT+ '/' DIGIT+;
-tempo: meter_fraction EQUALS DIGIT+;
+meter_fraction: DIGIT '/' DIGIT;
+tempo: meter_fraction EQUALS DIGIT;
 
 key: keynote MODE_MINOR?;
 keynote: BASENOTE KEY_ACCIDENTAL?;
@@ -40,8 +40,8 @@ note_element: note | multi_note;
 note: note_or_rest note_length?;
 note_or_rest: pitch | REST;
 pitch: accidental? BASENOTE OCTAVE?;
-/*note_length: (DIGIT+)? ('/' (DIGIT+)?)?;*/
-note_length: DIGIT+ ('/' DIGIT+)? | '/' DIGIT+;
+/*note_length: (DIGIT)? ('/' (DIGIT)?)?;*/
+note_length: DIGIT ('/' DIGIT)? | '/' DIGIT;
 
 /* tuplets */
 tuplet_element: tuplet_spec note_element+;
@@ -74,7 +74,7 @@ BARLINE: '|' | '||' | '[|' | '|]' | ':|' | '|:';
 NTH_REPEAT: '[1' | '[2';
 
 /********** General tokens **********/
-DIGIT: [0-9];
+DIGIT: [0-9]+;
 BASENOTE: [A-Ga-g];
 EQUALS: '=';
 EOL: '\n' | '\r''\n'?;
