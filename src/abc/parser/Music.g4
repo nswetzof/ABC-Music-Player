@@ -14,20 +14,21 @@ field_number: 'X:' DIGIT EOL;
 comment: '%' .*? EOL;
 field_title: TITLE;
 other_fields: field_composer | field_default_length | field_meter | field_tempo | field_voice | comment;
-field_composer: COMPOSER EOL;
+field_composer: COMPOSER;
 field_default_length: 'L:' note_length_strict EOL;
 field_meter: ('M:C' | 'M:C|' | 'M:' meter) EOL;
 field_tempo: 'Q:' tempo EOL;
 field_voice: 'V:' ~EOL+? EOL;
-field_key: 'K:' key EOL;
+field_key: key EOL;
 
 note_length_strict: DIGIT '/' DIGIT;
 meter: meter_fraction;
 meter_fraction: DIGIT '/' DIGIT;
 tempo: meter_fraction EQUALS DIGIT;
 
-key: keynote MODE_MINOR?;
-keynote: BASENOTE KEY_ACCIDENTAL?;
+key: KEYNOTE MODE_MINOR?;
+//keynote: BASENOTE KEY_ACCIDENTAL?;
+KEYNOTE: 'K:' (BASENOTE | BASENOTE '#' | 'Ab' | 'Bb' | 'Cb' | 'Db' | 'Eb' | 'Fb' | 'Gb');
 
 /* Music */
 
@@ -57,10 +58,10 @@ mid_tune_field: field_voice;
 /*line: (~[_] BASENOTE ('\''* | ','*) meter_fraction?)+ | [\[]:];*/
 
 /********** Header tokens **********/
-KEY_ACCIDENTAL: [#b];
+//KEY_ACCIDENTAL: [#b];
 MODE_MINOR: 'm';
 TITLE: 'T:' .*? EOL;
-COMPOSER: 'C:' [a-zA-Z .]+;
+COMPOSER: 'C:' .*? EOL;
 /*TEXT: [a-zA-Z][. a-zA-Z]+;*/
 
 /********** Music tokens **********/
