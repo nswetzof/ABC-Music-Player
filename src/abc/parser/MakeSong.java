@@ -14,6 +14,8 @@ import music.*;
 public class MakeSong extends MusicBaseListener {
 	private Map<String, Music> voices = new HashMap<String, Music>();
 	private Stack<Integer> intStack = new Stack<Integer>();
+	private Stack<Music> stack = new Stack<Music>();
+	
 	private boolean setLength = false;
 	private boolean setMeter = false;
 	private boolean setTempo = false;
@@ -167,28 +169,10 @@ public class MakeSong extends MusicBaseListener {
 	  @Override public void exitField_meter(MusicParser.Field_meterContext ctx) {
 		  
 	  }
+	  
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterField_tempo(MusicParser.Field_tempoContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitField_tempo(MusicParser.Field_tempoContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterField_voice(MusicParser.Field_voiceContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Add new voice, if not present, and add subsequent Music elements to the
+	   * Music object associated with this voice
 	   */
 	  @Override public void exitField_voice(MusicParser.Field_voiceContext ctx) {
 		  String voice = ctx.getText().substring(2).strip();
@@ -199,35 +183,9 @@ public class MakeSong extends MusicBaseListener {
 			  song.addVoice(voice);
 		  }
 	  }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterField_key(MusicParser.Field_keyContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitField_key(MusicParser.Field_keyContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterNote_length_strict(MusicParser.Note_length_strictContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitNote_length_strict(MusicParser.Note_length_strictContext ctx) { }
 
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Add meter information to Song
 	   */
 	  @Override public void exitMeter(MusicParser.MeterContext ctx) {
 		  song.setMeter(Integer.valueOf(ctx.meter_fraction().DIGIT().get(0).toString()),
@@ -237,16 +195,7 @@ public class MakeSong extends MusicBaseListener {
 	  }
 
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitMeter_fraction(MusicParser.Meter_fractionContext ctx) {  }
-
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Add tempo information to Song
 	   */
 	  @Override public void exitTempo(MusicParser.TempoContext ctx) {
 		  song.setTempo(Double.valueOf(ctx.meter_fraction().DIGIT().get(0).toString()) /
@@ -257,17 +206,13 @@ public class MakeSong extends MusicBaseListener {
 	  }
 
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Add key information to Song
 	   */
 	  @Override public void exitKey(MusicParser.KeyContext ctx) {
 		  song.setKey(ctx.getText().substring(2));
 	  }
 
 	  /**
-	   * {@inheritDoc}
-	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void enterBody(MusicParser.BodyContext ctx) { }
@@ -307,36 +252,33 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void enterNote_element(MusicParser.Note_elementContext ctx) { }
+	  
+	  /**
+	   * Add Music element with type and properties determined by descendant nodes
+	   */
+	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) {
+		  song.addElement(currentVoice, stack.pop());
+	  }
+	  
+	  @Override public void exitNote(MusicParser.NoteContext ctx) {
+		  
+		// No listener for REST terminal so it will not push to the stack
+		  if(stack.empty())
+			  stack.push(new Rest(???)); // TODO: need function to parse note_length tokens
+		  
+		  else {
+			  stack.push(new Note(???)) // TODO: need function to parse BASENOTE tokens into pitches based on key signature
+		  }
+//		  stack.pop(item)
+	  }
+
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterNote(MusicParser.NoteContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitNote(MusicParser.NoteContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterNote_or_rest(MusicParser.Note_or_restContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitNote_or_rest(MusicParser.Note_or_restContext ctx) { }
+	  @Override public void exitNote_or_rest(MusicParser.Note_or_restContext ctx) {
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -455,4 +397,36 @@ public class MakeSong extends MusicBaseListener {
 //		  
 //		  return number;
 //	  }
+	  
+	  // Convert note_length non-terminal into a value which can be fed into a Music object
+	  private int lengthToTicks(MusicParser.Note_lengthContext lengthContext) {
+		  String noteLength = lengthContext.getText();
+		  
+		  int numerator = 1;
+		  int denominator = 2;
+		  
+		  if(noteLength.matches("\\d+")) {
+			  denominator = 1;
+			  numerator = Integer.valueOf(noteLength) * song.getTicksPerBeat();
+		  }
+		  
+		  else if(noteLength.matches("\\d+/\\d+")) {
+			  numerator = Integer.valueOf(noteLength.split("/")[0]);
+			  denominator = Integer.valueOf(noteLength.split("/")[1]);
+		  }
+		  
+		  else if(noteLength.matches("/\\d+")) {
+			  denominator = Integer.valueOf(noteLength.substring(1));
+		  }
+		  
+		  else
+			  numerator = Integer.valueOf(noteLength.split("/")[0]);
+		  
+		  // if denominator is higher than current number of ticks per beat, update ticksPerBeat variable
+		  // to denominator
+		  if(song.getTicksPerBeat() < denominator)
+			  song.setTicksPerBeat(denominator);
+		  
+		  return numerator * song.getTicksPerBeat() / denominator;
+	  }
 }

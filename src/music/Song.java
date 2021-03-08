@@ -62,6 +62,9 @@ public class Song {
 	private Pair<Double, Integer> tempo;
 	private String key;
 	
+	// body information
+	private int ticksPerBeat;
+	
 	/*
 	 * Rep invariant:
 	 * 	all fields are non-null;
@@ -92,6 +95,8 @@ public class Song {
 		this.tempo = new Pair<Double, Integer>(this.length, 100);
 		this.key = "";
 	}
+	
+	// Observer methods
 	
 	/**
 	 * @return index number of Song
@@ -157,6 +162,15 @@ public class Song {
 	}
 	
 	/**
+	 * @return number of ticks per beat
+	 */
+	public int getTicksPerBeat() {
+		return this.ticksPerBeat;
+	}
+	
+	// Mutator methods
+	
+	/**
 	 * Set index of Song
 	 * @param i number representing desired index
 	 */
@@ -217,6 +231,19 @@ public class Song {
 		this.key = k;
 	}
 	
+	/**
+	 * Set number of ticks per beat that will be passed into a SequencePlayer object to play the music.
+	 * @param perBeat desired number of ticks per beat
+	 */
+	public void setTicksPerBeat(int perBeat) {
+		this.ticksPerBeat = perBeat;
+	}
+	
+	/**
+	 * Add a Music object associated with a named voice
+	 * @param voiceName represents the name associated with the voice
+	 * @return false if Music object is already present, true otherwise
+	 */
 	public boolean addVoice(String voiceName) {
 		if(voices.containsKey(voiceName))
 			return false;
@@ -231,15 +258,28 @@ public class Song {
 	/** Print header information of song
 	 */
 	public void printHeader() {
-		
+		System.out.println("Index Number: " + this.getIndex());
+		System.out.println("Title: " + this.getTitle());
+		System.out.println("Composer: " + this.getComposer());
+		System.out.println("Note Length: " + this.getLength());
+		System.out.println("Meter: " + this.getMeter().first() + "/" + this.getMeter().second());
+		System.out.println("Tempo: " + this.getTempo().first() + "=" + this.getTempo().second());
+		System.out.println("Key: " + this.getKey());
 	}
 	
 	/** 
 	 * Add musical element to the song
 	 * @param voice name of voice which will play the musical element
 	 */
-	public void addElement(String voiceName) {
+	public boolean addElement(String voiceName, Music element) {
+		if(!voices.containsKey(voiceName))
+			return false;
 		
+		voices.put(voiceName, new Concat(voices.get(voiceName), element));
+		
+		checkRep();
+		
+		return true;
 	}
 	
 	/**

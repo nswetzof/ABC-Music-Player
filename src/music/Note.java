@@ -17,7 +17,7 @@ public class Note implements Music {
 	
 	/**
 	 * Make a musical note
-	 * @param dur duration of the note in beats
+	 * @param dur duration of the note in ticks
 	 * @param perBeat number of ticks per beat
 	 * @param p pitch of the note
 	 */
