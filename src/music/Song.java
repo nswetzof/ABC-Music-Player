@@ -14,7 +14,9 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import abc.parser.MakeSong;
 import abc.parser.MusicLexer;
@@ -62,6 +64,29 @@ public class Song {
 	private Pair<Double, Integer> tempo;
 	private String key;
 	
+	private final Map<String, MajorKeys> keyMap = new HashMap<String, MajorKeys>(); // maps key String to MajorKeys value
+	private final List<Integer> keyOffset;
+	
+	private static enum MajorKeys {C, G, D, A, E, B, Fs, F, Bb, Eb, Ab, Db};
+	private static enum MinorKeys {A, E, B, Fs, Cs, Gs, Ds, D, G, C, F, Bb};
+	
+	// list of pitch offsets for all key signatures. Each element in the list is a list of the offset amounts for each
+	// note where element[i] corresponds with [A, B, C, D, E, F, G][i]
+	private static final List<List<Integer>> PITCH_OFFSETS = Arrays.asList(
+			Arrays.asList(0, 0, 0, 0, 0, 0, 0), // C
+			Arrays.asList(0, 0, 0, 0, 0, 1, 0), // G
+			Arrays.asList(0, 0, 1, 0, 0, 1, 0), // D
+			Arrays.asList(0, 0, 1, 0, 0, 1, 1), // A
+			Arrays.asList(0, 0, 1, 1, 0, 1, 1), // E
+			Arrays.asList(1, 0, 1, 1, 0, 1, 1), // B or Cb
+			Arrays.asList(1, 0, 1, 1, 1, 1, 1), // F# or Gb
+			Arrays.asList(0, -1, 0, 0, 0, 0, 0), // F
+			Arrays.asList(0, -1, 0, 0, -1, 0, 0), // Bb
+			Arrays.asList(-1, -1, 0, 0, -1, 0, 0), // Eb
+			Arrays.asList(-1, -1, 0, -1, -1, 0, 0), // Ab
+			Arrays.asList(-1, -1, 0, -1, -1, 0, -1) // Db or C#
+			);
+	
 	// body information
 	private int ticksPerBeat;
 	
@@ -97,6 +122,14 @@ public class Song {
 		this.key = "";
 		
 		this.ticksPerBeat = 1;
+		
+		this.initializeKeyMap();
+		
+		if(this.key.endsWith("m"))
+			this.keyOffset = Song.PITCH_OFFSETS.get(
+					MajorKeys.valueOf(this.key.substring(0, this.key.length() - 1)).ordinal());
+		else
+			this.keyOffset = Song.PITCH_OFFSETS.get(this.keyMap.get(this.key).ordinal());
 	}
 	
 	// Observer methods
@@ -295,6 +328,42 @@ public class Song {
 		//	for SequencePlayer object
 		for(Music m : voices.values())
 			m.setTicksPerBeat(this.ticksPerBeat);
+	}
+	
+	/** Set up mappings of key signature strings to MajorKeys enum which corresponds to indices in list of
+	 * 	pitch offsets (PITCH_OFFSETS field)
+	 */
+	private void initializeKeyMap() { // TODO: MAY WANT TO PUT ALL THIS IN MAKESONG BECAUSE KEY SIGNATURES CAN BE
+									  //		IN THE BODY OF THE SONG
+									  //		OR:
+									  //		MAYBE CAN HAVE A FUNCTION 'changeKeySignature' to change within Song
+		keyMap.put("A", MajorKeys.A);
+		keyMap.put("Ab", MajorKeys.Ab);
+		keyMap.put("A#", MajorKeys.Bb);
+		
+		keyMap.put("B", MajorKeys.B);
+		keyMap.put("B#", MajorKeys.C);
+		keyMap.put("Bb", MajorKeys.Bb);
+		
+		keyMap.put("C", MajorKeys.C);
+		keyMap.put("C#", MajorKeys.Db);
+		keyMap.put("Cb", MajorKeys.B);
+		
+		keyMap.put("D", MajorKeys.D);
+		keyMap.put("D#", MajorKeys.Eb);
+		keyMap.put("Db", MajorKeys.Db);
+		
+		keyMap.put("E", MajorKeys.E);
+		keyMap.put("E#", MajorKeys.F);
+		keyMap.put("Eb", MajorKeys.Eb);
+		
+		keyMap.put("F", MajorKeys.F);
+		keyMap.put("F#", MajorKeys.Fs);
+		keyMap.put("Fb", MajorKeys.E);
+		
+		keyMap.put("G", MajorKeys.G);
+		keyMap.put("G#", MajorKeys.Ab);
+		keyMap.put("Gb", MajorKeys.Fs);
 	}
 	
 	/**

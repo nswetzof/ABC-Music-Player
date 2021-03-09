@@ -19,9 +19,7 @@ public class MakeSong extends MusicBaseListener {
 	private boolean setLength = false;
 	private boolean setMeter = false;
 	private boolean setTempo = false;
-	
-//	private final Map<String, Map<String, String>> keySignatures;
-//	private final Map<String, String> minorKeys;
+			
 	
 	Song song = new Song();
 	private String currentVoice = "";
