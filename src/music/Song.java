@@ -70,6 +70,7 @@ public class Song {
 	 * 	all fields are non-null;
 	 * 	key must be in the set of major and minor keys in western musical notation
 	 * 	voices.size() > 0
+	 * 	ticksPerBeat > 0
 	 * Abstraction function:
 	 * 	Represents a song with a certain number of voices represented by the 'voices' map where keys represent voice
 	 * 		names and values represent the notes associated with those voices. Information which would be displayed
@@ -94,6 +95,8 @@ public class Song {
 		this.length = 1.0/8;
 		this.tempo = new Pair<Double, Integer>(this.length, 100);
 		this.key = "";
+		
+		this.ticksPerBeat = 1;
 	}
 	
 	// Observer methods
@@ -287,6 +290,11 @@ public class Song {
 	 */
 	public void play() {
 		// TODO: will create SequencePlayer object here
+		
+		// Update all Music objects and their children recursively to define uniform number of ticks per beat
+		//	for SequencePlayer object
+		for(Music m : voices.values())
+			m.setTicksPerBeat(this.ticksPerBeat);
 	}
 	
 	/**

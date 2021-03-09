@@ -150,9 +150,11 @@ public class MakeSong extends MusicBaseListener {
 	   */
 	  @Override public void exitField_default_length(MusicParser.Field_default_lengthContext ctx) {
 		  double numerator = Double.valueOf(ctx.note_length_strict().DIGIT().get(0).toString());
-		  double denominator = Double.valueOf(ctx.note_length_strict().DIGIT().get(1).toString());
+		  int denominator = Integer.valueOf(ctx.note_length_strict().DIGIT().get(1).toString());
 		  
 		  song.setLength(numerator / denominator);
+		  song.setTicksPerBeat(denominator);
+		  
 		  this.setLength = true;
 	  }
 	  /**
@@ -262,12 +264,14 @@ public class MakeSong extends MusicBaseListener {
 	  
 	  @Override public void exitNote(MusicParser.NoteContext ctx) {
 		  
-		// No listener for REST terminal so it will not push to the stack
+		  System.out.println(ctx.getText());
+		  System.out.println(this.lengthToTicks(ctx.note_length()));
+		  // No listener for REST terminal, so it will not push to the stack
 		  if(stack.empty())
-			  stack.push(new Rest(???)); // TODO: need function to parse note_length tokens
+			  stack.push(new Rest(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat()));
 		  
 		  else {
-			  stack.push(new Note(???)) // TODO: need function to parse BASENOTE tokens into pitches based on key signature
+			  //stack.push(new Note(???)) // TODO: need function to parse BASENOTE tokens into pitches based on key signature
 		  }
 //		  stack.pop(item)
 	  }
@@ -400,26 +404,34 @@ public class MakeSong extends MusicBaseListener {
 	  
 	  // Convert note_length non-terminal into a value which can be fed into a Music object
 	  private int lengthToTicks(MusicParser.Note_lengthContext lengthContext) {
+		  if(lengthContext == null)
+			  return song.getTicksPerBeat();
+		  
 		  String noteLength = lengthContext.getText();
 		  
+		  // default values correspond to noteLength == '/'
 		  int numerator = 1;
 		  int denominator = 2;
 		  
+		  // x
 		  if(noteLength.matches("\\d+")) {
 			  denominator = 1;
 			  numerator = Integer.valueOf(noteLength) * song.getTicksPerBeat();
 		  }
 		  
+		  // x/y
 		  else if(noteLength.matches("\\d+/\\d+")) {
 			  numerator = Integer.valueOf(noteLength.split("/")[0]);
 			  denominator = Integer.valueOf(noteLength.split("/")[1]);
 		  }
 		  
+		  // /y
 		  else if(noteLength.matches("/\\d+")) {
 			  denominator = Integer.valueOf(noteLength.substring(1));
 		  }
 		  
-		  else
+		  // x/
+		  else if(noteLength.matches("\\d+/")) 
 			  numerator = Integer.valueOf(noteLength.split("/")[0]);
 		  
 		  // if denominator is higher than current number of ticks per beat, update ticksPerBeat variable
