@@ -65,7 +65,7 @@ public class Song {
 	private String key;
 	
 	private final Map<String, MajorKeys> keyMap = new HashMap<String, MajorKeys>(); // maps key String to MajorKeys value
-	private final List<Integer> keyOffset;
+	private List<Integer> keyOffset;
 	
 	private static enum MajorKeys {C, G, D, A, E, B, Fs, F, Bb, Eb, Ab, Db};
 	private static enum MinorKeys {A, E, B, Fs, Cs, Gs, Ds, D, G, C, F, Bb};
@@ -124,12 +124,6 @@ public class Song {
 		this.ticksPerBeat = 1;
 		
 		this.initializeKeyMap();
-		
-		if(this.key.endsWith("m"))
-			this.keyOffset = Song.PITCH_OFFSETS.get(
-					MajorKeys.valueOf(this.key.substring(0, this.key.length() - 1)).ordinal());
-		else
-			this.keyOffset = Song.PITCH_OFFSETS.get(this.keyMap.get(this.key).ordinal());
 	}
 	
 	// Observer methods
@@ -265,6 +259,14 @@ public class Song {
 	 */
 	public void setKey(String k) {
 		this.key = k;
+		
+		if(this.key.endsWith("m"))
+			this.keyOffset = Song.PITCH_OFFSETS.get(
+					MajorKeys.valueOf(this.key.substring(0, this.key.length() - 1)).ordinal());
+		else {
+			System.err.println(this.key);
+			this.keyOffset = Song.PITCH_OFFSETS.get(this.keyMap.get(this.key).ordinal());
+		}
 	}
 	
 	/**
@@ -337,6 +339,7 @@ public class Song {
 									  //		IN THE BODY OF THE SONG
 									  //		OR:
 									  //		MAYBE CAN HAVE A FUNCTION 'changeKeySignature' to change within Song
+									  //		OR: DON'T THINK I NEED EITHER, JUST COMPARING PITCHES SINCE WITHIN OCTAVE
 		keyMap.put("A", MajorKeys.A);
 		keyMap.put("Ab", MajorKeys.Ab);
 		keyMap.put("A#", MajorKeys.Bb);
