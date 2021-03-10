@@ -1,6 +1,7 @@
 package music;
 
 import java.io.IOException;
+import java.util.List;
 
 import abc.sound.SequencePlayer;
 
@@ -32,7 +33,7 @@ public interface Music {
 	public void play(SequencePlayer player, int atTick);
 	
 	/**
-	 * Return the greatest common divisor of a fraction
+	 * Find the greatest common divisor of a fraction
 	 * @param numerator the numerator
 	 * @param denominator the denominator
 	 * @return greatest common divisor of the fraction represented by numerator / denominator
@@ -46,5 +47,15 @@ public interface Music {
 		}
 		
 		return gcd;
+	}
+	
+	/**
+	 * Find the least common multiple of the ticksPerBeat fields in a list of Music objects
+	 * @param musics list of Music objects to compared
+	 * @return integer value of the least common multiple of the ticksPerBeat fields of all the Music objects
+	 */
+	public static int leastCommonTicksPerBeat(List<Integer> musics) {
+		// TODO: implement
+		throw new RuntimeException("not implemented");
 	}
 }

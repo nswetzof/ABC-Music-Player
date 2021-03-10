@@ -12,6 +12,7 @@ import org.junit.Test;
 import abc.sound.SequencePlayer;
 
 public class MusicTest {
+	// TODO: probably remove from project
 	
 	private String abcString1 = "X: 1\nT: Song1\nK: C\n";
 
@@ -40,7 +41,7 @@ public class MusicTest {
 		try {
 			Music m = Music.parse(abcString1);
 			
-			final int ticksPerBeat = m.getTicksPerBeat(); 
+			final int ticksPerBeat = m.getTicksPerBeat();
 			SequencePlayer player1 = new SequencePlayer(100, ticksPerBeat);
 			SequencePlayer player2 = new SequencePlayer(100, ticksPerBeat);
 			

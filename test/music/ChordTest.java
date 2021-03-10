@@ -30,6 +30,13 @@ public class ChordTest {
 	 * 
 	 * 	Verify the SequencePlayer object used when calling the play method matches expected for each
 	 * 		partition of duration and pitch.
+	 * 
+	 * 	Verify observer and mutator for ticksPerBeat field results in correct values after changing using
+	 * 		multiple notes in the chord with:
+	 * 			every note having same ticksPerBeat;
+	 * 			notes having different ticksPerBeat with the larger divisible by the smaller;
+	 * 			notes having different ticksPerBeat with the larger not divisible by the smaller
+	 * 		
 	 */
 	
 	// this test covers 1 note in chord
@@ -128,5 +135,76 @@ public class ChordTest {
 		} catch(InvalidMidiDataException imde) {
 			fail(imde.getStackTrace().toString());
 		}
+	}
+	
+	// test for ticksPerBeat observer and mutator
+	
+	// this test covers same ticksPerBeat in all notes
+	@Test
+	public void testChordTicksPerBeatSameTicksPerBeat() {
+		List<Note> notes = new ArrayList<Note>();
+		Note note1 = new Note(4, 4, new Pitch('C'));
+		Note note2 = new Note(2, 4, new Pitch('E').transpose(-1));
+		Note note3 = new Note(8, 4, new Pitch('G'));
+		
+		notes.add(note1);
+		notes.add(note2);
+		notes.add(note3);
+		
+		Chord chord = new Chord(notes);
+		
+		assertTrue(chord.getTicksPerBeat() % note1.getTicksPerBeat() == 0);
+		assertTrue(chord.getTicksPerBeat() % note2.getTicksPerBeat() == 0);
+		assertTrue(chord.getTicksPerBeat() % note3.getTicksPerBeat() == 0);
+		
+		chord.setTicksPerBeat(16);
+		
+		assertTrue(chord.getTicksPerBeat() == 16);
+	}
+	
+	// this test covers different ticksPerBeat in all notes with larger divisible by smaller ticksPerBeat
+	@Test
+	public void testChordTicksPerBeatIntegerMultiple() {
+		List<Note> notes = new ArrayList<Note>();
+		Note note1 = new Note(4, 2, new Pitch('C'));
+		Note note2 = new Note(2, 4, new Pitch('E').transpose(-1));
+		Note note3 = new Note(6, 8, new Pitch('G'));
+		
+		notes.add(note1);
+		notes.add(note2);
+		notes.add(note3);
+		
+		Chord chord = new Chord(notes);
+		
+		assertTrue(chord.getTicksPerBeat() % note1.getTicksPerBeat() == 0);
+		assertTrue(chord.getTicksPerBeat() % note2.getTicksPerBeat() == 0);
+		assertTrue(chord.getTicksPerBeat() % note3.getTicksPerBeat() == 0);
+
+		chord.setTicksPerBeat(16);
+		
+		assertTrue(chord.getTicksPerBeat() == 16);
+	}
+	
+	// this test covers different ticksPerBeat in all notes with larger not divisible by smaller ticksPerBeat
+	@Test
+	public void testChordTicksPerBeatNotIntegerMultiple() {
+		List<Note> notes = new ArrayList<Note>();
+		Note note1 = new Note(4, 3, new Pitch('C'));
+		Note note2 = new Note(2, 5, new Pitch('E').transpose(-1));
+		Note note3 = new Note(6, 8, new Pitch('G'));
+		
+		notes.add(note1);
+		notes.add(note2);
+		notes.add(note3);
+		
+		Chord chord = new Chord(notes);
+		
+		assertTrue(chord.getTicksPerBeat() % note1.getTicksPerBeat() == 0);
+		assertTrue(chord.getTicksPerBeat() % note2.getTicksPerBeat() == 0);
+		assertTrue(chord.getTicksPerBeat() % note3.getTicksPerBeat() == 0);
+
+		chord.setTicksPerBeat(16);
+		
+		assertTrue(chord.getTicksPerBeat() == 16);
 	}
 }

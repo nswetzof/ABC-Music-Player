@@ -58,6 +58,11 @@ public class RestTest {
 			r3.play(player1, 3);
 			assertEquals(player2.toString(), player1.toString());
 			
+			// test observer and mutator for ticksPerBeat
+			r3.setTicksPerBeat(8);
+			assertTrue(8 == r3.getTicksPerBeat());
+			assertTrue(2 == r3.getDuration());
+			
 		} catch (MidiUnavailableException mue) {
 	        mue.printStackTrace();
 	    } catch (InvalidMidiDataException imde) {

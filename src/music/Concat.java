@@ -5,6 +5,7 @@ import abc.sound.SequencePlayer;
 /** Represents two pieces of music played one after the other **/
 public class Concat implements Music {
 	private final Music first, second;
+	private int ticksPerBeat;
 	
 	/*
 	 * Rep invariant:
@@ -26,6 +27,11 @@ public class Concat implements Music {
 		this.first = m1;
 		this.second = m2;
 		
+		if(m1.getTicksPerBeat() / m2.getTicksPerBeat() == 0 || m2.getTicksPerBeat() / m1.getTicksPerBeat() == 0)
+			this.ticksPerBeat = Math.max(m1.getTicksPerBeat(), m2.getTicksPerBeat());
+		else
+			throw new RuntimeException("not implemented");
+		
 		checkRep();
 	}
 	
@@ -35,6 +41,19 @@ public class Concat implements Music {
 	@Override
 	public int getDuration() {
 		return this.first.getDuration() + this.second.getDuration();
+	}
+	
+	@Override
+	public int getTicksPerBeat() {
+		return this.ticksPerBeat;
+	}
+	
+	@Override
+	public void setTicksPerBeat(int ticks) {
+		this.ticksPerBeat = ticks;
+		
+		this.first.setTicksPerBeat(ticks);
+		this.second.setTicksPerBeat(ticks);
 	}
 	
 	/**

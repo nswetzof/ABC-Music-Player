@@ -29,6 +29,9 @@ public class NoteTest {
 	 * 
 	 * 	Verify the SequencePlayer object used when calling the play method matches expected for each
 	 * 		partition of duration and pitch.
+	 * 
+	 *  Verify observer and mutator for ticksPerBeat field results in correct values after changing ticksPerBeat 
+	 *  	to an integer multiple of its original value
 	 */
 	
 	// this test covers 0 duration
@@ -339,5 +342,15 @@ public class NoteTest {
 		} catch(InvalidMidiDataException imde) {
 			fail(imde.getStackTrace().toString());
 		}
+	}
+	
+	// test for ticksPerBeat observer and mutator
+	@Test
+	public void testNoteTicksPerBeat() {
+		Note note = new Note(6, 6, new Pitch('C'));
+		
+		note.setTicksPerBeat(12);
+		assertTrue(12 == note.getTicksPerBeat());
+		assertTrue(12 == note.getDuration());
 	}
 }

@@ -10,7 +10,8 @@ import abc.sound.SequencePlayer;
 /** Represents multiple notes playing at the same time **/
 public class Chord implements Music {
 	private final List<Note> notes;
-	private final int duration;
+	private int duration;
+	private int ticksPerBeat;
 	
 	/*
 	 * Rep invariant:
@@ -34,6 +35,8 @@ public class Chord implements Music {
 		this.notes = new ArrayList<Note>(n);
 		this.notes.sort((x, y) -> x.compare(y));
 		
+		//this.ticksPerBeat = //TODO: complete 
+		
 		duration = this.notes.get(0).getDuration();
 		
 		checkRep();
@@ -47,6 +50,16 @@ public class Chord implements Music {
 		return duration;
 	}
 	
+	@Override
+	public int getTicksPerBeat() {
+		return this.ticksPerBeat;
+	}
+	
+	@Override
+	public void setTicksPerBeat(int ticks) {
+		throw new RuntimeException("not implemented");
+	}
+	
 	/**
 	 * Play the chord.
 	 * @param player object which stores data for the musical composition
@@ -55,9 +68,10 @@ public class Chord implements Music {
 	 */
 	@Override
 	public void play(SequencePlayer player, int atTick) {
-		for(Note note : this.notes)
+		for(Note note : this.notes) {
 			note.setTicksPerBeat(this.ticksPerBeat);
 			player.addNote(note.getPitch().toMidiNote(), atTick, note.getDuration());
+		}
 	}
 	
 	/**

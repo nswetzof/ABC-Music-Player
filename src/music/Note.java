@@ -4,8 +4,8 @@ import abc.sound.SequencePlayer;
 import abc.sound.Pitch;
 
 public class Note implements Music {
-	private final int duration;
-	private final int ticksPerBeat;
+	private int duration;
+	private int ticksPerBeat;
 	private final Pitch pitch;
 	
 	/*
@@ -13,6 +13,8 @@ public class Note implements Music {
 	 * 	duration >= 0;
 	 * Abstraction function:
 	 * 	Represents a note with pitch given by the 'pitch' field of 'duration' number of beats
+	 * Safety from rep exposure:
+	 * 	TODO: complete
 	 */
 	
 	/**
@@ -60,7 +62,14 @@ public class Note implements Music {
 	
 	@Override
 	public int getTicksPerBeat() {
+		int oldTicksPerBeat = this.ticksPerBeat;
 		return this.ticksPerBeat;
+		
+	}
+	
+	@Override
+	public void setTicksPerBeat(int ticks) {
+		this.ticksPerBeat = ticks;
 	}
 	
 	// TODO: if numerator in a fraction is equal to 1, don't want to show (same for rests)
