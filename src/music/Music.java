@@ -1,7 +1,9 @@
 package music;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import abc.sound.SequencePlayer;
 
@@ -51,11 +53,30 @@ public interface Music {
 	
 	/**
 	 * Find the least common multiple of the ticksPerBeat fields in a list of Music objects
-	 * @param musics list of Music objects to compared
+	 * @param list list of Music objects to compared
 	 * @return integer value of the least common multiple of the ticksPerBeat fields of all the Music objects
+	 * 			unless it is over 128 times the largest ticksPerBeat value, in which case -1 is returned
 	 */
-	public static int leastCommonTicksPerBeat(List<Integer> musics) {
-		// TODO: implement
-		throw new RuntimeException("not implemented");
+	public static int leastCommonTicksPerBeat(List<Integer> list) {
+		int largest = list.stream().reduce((x, y) -> Math.min(x, y)).get();
+		
+		int c = 1;
+		boolean isLCM = false;
+		
+		while(!isLCM && c < 128) {
+			c++;
+			for(int num : list) {
+				if((largest * c) % num != 0) {
+					isLCM = false;
+					break;
+				}
+				isLCM = true;
+			}
+		}
+		
+		if(!isLCM)
+			return -1;
+		
+		return c*largest;
 	}
 }

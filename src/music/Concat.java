@@ -1,5 +1,7 @@
 package music;
 
+import java.util.Arrays;
+
 import abc.sound.SequencePlayer;
 
 /** Represents two pieces of music played one after the other **/
@@ -30,7 +32,7 @@ public class Concat implements Music {
 		if(m1.getTicksPerBeat() / m2.getTicksPerBeat() == 0 || m2.getTicksPerBeat() / m1.getTicksPerBeat() == 0)
 			this.ticksPerBeat = Math.max(m1.getTicksPerBeat(), m2.getTicksPerBeat());
 		else
-			throw new RuntimeException("not implemented");
+			this.ticksPerBeat = Music.leastCommonTicksPerBeat(Arrays.asList(m1.getTicksPerBeat(), m2.getTicksPerBeat()));
 		
 		checkRep();
 	}

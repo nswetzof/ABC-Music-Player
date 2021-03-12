@@ -2,6 +2,7 @@ package music;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
@@ -35,7 +36,13 @@ public class Chord implements Music {
 		this.notes = new ArrayList<Note>(n);
 		this.notes.sort((x, y) -> x.compare(y));
 		
-		//this.ticksPerBeat = //TODO: complete 
+		List<Integer> tickValues = new ArrayList<Integer>();
+		
+		for(Note note : this.notes) {
+			tickValues.add(note.getTicksPerBeat());
+		}
+		
+		this.ticksPerBeat = Music.leastCommonTicksPerBeat(tickValues);
 		
 		duration = this.notes.get(0).getDuration();
 		
@@ -57,7 +64,11 @@ public class Chord implements Music {
 	
 	@Override
 	public void setTicksPerBeat(int ticks) {
-		throw new RuntimeException("not implemented");
+		this.ticksPerBeat = ticks;
+		
+		for(Note note : this.notes) {
+			note.setTicksPerBeat(ticks);
+		}
 	}
 	
 	/**
