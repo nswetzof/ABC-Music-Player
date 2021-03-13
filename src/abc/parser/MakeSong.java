@@ -1,5 +1,7 @@
 package abc.parser;
 
+import static org.junit.Assert.assertThrows;
+
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -7,8 +9,10 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import abc.sound.Pitch;
 import abc.sound.SequencePlayer;
 import music.*;
+//import music.Song.MajorKeys;
 
 
 public class MakeSong extends MusicBaseListener {
@@ -19,7 +23,32 @@ public class MakeSong extends MusicBaseListener {
 	private boolean setLength = false;
 	private boolean setMeter = false;
 	private boolean setTempo = false;
-			
+	
+	private final Map<String, MajorKeys> keyMap = generateKeyMap(); // maps key String to MajorKeys value
+	private List<Integer> keyOffset; // store the pitch offsets for each note based on accidentals 
+									 //	based on the 'key' field
+	private Map<String, Integer> barlineOffset; // store pitch offsets to be applied to just the barline with keys
+												// represented by the pitch and values represented by the pitch offsets
+	
+	private static enum MajorKeys {C, G, D, A, E, B, Fs, F, Bb, Eb, Ab, Db};
+	private static enum MinorKeys {A, E, B, Fs, Cs, Gs, Ds, D, G, C, F, Bb};
+	
+	// list of pitch offsets for all key signatures. Each element in the list is a list of the offset amounts for each
+	// note where element[i] corresponds with [A, B, C, D, E, F, G][i]
+	private static final List<List<Integer>> PITCH_OFFSETS = Arrays.asList(
+			Arrays.asList(0, 0, 0, 0, 0, 0, 0), // C
+			Arrays.asList(0, 0, 0, 0, 0, 1, 0), // G
+			Arrays.asList(0, 0, 1, 0, 0, 1, 0), // D
+			Arrays.asList(0, 0, 1, 0, 0, 1, 1), // A
+			Arrays.asList(0, 0, 1, 1, 0, 1, 1), // E
+			Arrays.asList(1, 0, 1, 1, 0, 1, 1), // B or Cb
+			Arrays.asList(1, 0, 1, 1, 1, 1, 1), // F# or Gb
+			Arrays.asList(0, -1, 0, 0, 0, 0, 0), // F
+			Arrays.asList(0, -1, 0, 0, -1, 0, 0), // Bb
+			Arrays.asList(-1, -1, 0, 0, -1, 0, 0), // Eb
+			Arrays.asList(-1, -1, 0, -1, -1, 0, 0), // Ab
+			Arrays.asList(-1, -1, 0, -1, -1, 0, -1) // Db or C#
+			);
 	
 	Song song = new Song();
 	private String currentVoice = "";
@@ -210,6 +239,17 @@ public class MakeSong extends MusicBaseListener {
 	   */
 	  @Override public void exitKey(MusicParser.KeyContext ctx) {
 		  song.setKey(ctx.getText().substring(2));
+		  String key = ctx.getText().substring(2);
+		  
+		  if(key.endsWith("m")) {
+			  this.keyOffset = this.PITCH_OFFSETS.get((MinorKeys)this.keyMap.get(key.substring(0, key.length() - 1)));
+			  this.keyOffset = this.PITCH_OFFSETS.get(this.keyMap.get(key.substring(0, key.length() - 1)).ordinal());
+			  System.err.println(keyOffset.toString()); // TODO: FIX keyOffset VALUE
+		  }
+		  else {
+			  System.err.println("Key: " + key);
+			  this.keyOffset = this.PITCH_OFFSETS.get(this.keyMap.get(key).ordinal()); // TODO: FIX
+		  }
 	  }
 
 	  /**
@@ -262,14 +302,17 @@ public class MakeSong extends MusicBaseListener {
 	  
 	  @Override public void exitNote(MusicParser.NoteContext ctx) {
 		  
-		  System.out.println(ctx.getText());
-		  System.out.println(this.lengthToTicks(ctx.note_length()));
+		  System.out.println("Note Terminal: " + ctx.getText());
+//		  System.out.println(this.lengthToTicks(ctx.note_length()));
 		  // No listener for REST terminal, so it will not push to the stack
 		  if(stack.empty())
 			  stack.push(new Rest(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat()));
 		  
 		  else {
-			  //stack.push(new Note(???)) // TODO: need function to parse BASENOTE tokens into pitches based on key signature
+			  String note = ctx.note_or_rest().getText();
+			  System.out.println("Note: " + note);
+			  //stack.push(new Note(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat(),
+			  //???)) // TODO: need function to parse BASENOTE tokens into pitches based on key signature
 		  }
 //		  stack.pop(item)
 	  }
@@ -292,7 +335,58 @@ public class MakeSong extends MusicBaseListener {
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void exitPitch(MusicParser.PitchContext ctx) { }
+	  @Override public void exitPitch(MusicParser.PitchContext ctx) {
+		  System.out.println("Pitch: " + ctx.getText());
+		  String note = ctx.BASENOTE().getText();
+		  String octave = (ctx.OCTAVE() == null ? "" : ctx.OCTAVE().getText());
+		  int offset = 0;
+		  
+		  Pitch p = new Pitch(note.toUpperCase().charAt(0));
+		  
+		  // lowercase letters are one octave up
+		  if(note != note.toUpperCase())
+			  offset += Pitch.OCTAVE;
+//			  p.transpose(Pitch.OCTAVE);
+		  
+		  // change amount to transpose pitch based on octave symbols
+		  if(octave != "") {
+			  if(octave.charAt(0) == '\'')
+				  offset += octave.length();
+			  else // ',' symbol
+				  offset -= octave.length();
+		  }
+		  
+		  if(ctx.accidental() != null) {
+			  
+			  switch(ctx.accidental().getText()) {
+			  	case "=":
+			  		offset += 0;
+			  		break;
+			  	case "^":
+			  		offset += 1;
+			  		break;
+			  	case "^^":
+			  		offset += 2;
+			  		break;
+			  	case "_":
+			  		offset += -1;
+			  		break;
+			  	case "__":
+			  		offset += -2;
+			  		break;
+			  }
+			  
+//			  p.transpose(offset);
+			  barlineOffset.put(note + octave, -2);			  
+		  }
+		  else {
+			  offset += this.keyOffset.get(this.keyMap.get(note.toUpperCase()).ordinal());
+//			  p.transpose(this.keyOffset.get(this.keyMap.get(note.toUpperCase()).ordinal()));
+		  }
+		  
+		  p.transpose(offset);
+		  System.err.println("offset: " + offset);
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -399,6 +493,43 @@ public class MakeSong extends MusicBaseListener {
 //		  
 //		  return number;
 //	  }
+	  
+	  /** Set up mappings of key signature strings to MajorKeys enum which corresponds to indices in list of
+		 * 	pitch offsets (PITCH_OFFSETS field)
+		 */
+		private Map<String, MajorKeys> generateKeyMap() {
+			Map<String, MajorKeys> keyDict = new HashMap<String, MajorKeys>();
+			
+			keyDict.put("A", MajorKeys.A);
+			keyDict.put("Ab", MajorKeys.Ab);
+			keyDict.put("A#", MajorKeys.Bb);
+			
+			keyDict.put("B", MajorKeys.B);
+			keyDict.put("B#", MajorKeys.C);
+			keyDict.put("Bb", MajorKeys.Bb);
+			
+			keyDict.put("C", MajorKeys.C);
+			keyDict.put("C#", MajorKeys.Db);
+			keyDict.put("Cb", MajorKeys.B);
+			
+			keyDict.put("D", MajorKeys.D);
+			keyDict.put("D#", MajorKeys.Eb);
+			keyDict.put("Db", MajorKeys.Db);
+			
+			keyDict.put("E", MajorKeys.E);
+			keyDict.put("E#", MajorKeys.F);
+			keyDict.put("Eb", MajorKeys.Eb);
+			
+			keyDict.put("F", MajorKeys.F);
+			keyDict.put("F#", MajorKeys.Fs);
+			keyDict.put("Fb", MajorKeys.E);
+			
+			keyDict.put("G", MajorKeys.G);
+			keyDict.put("G#", MajorKeys.Ab);
+			keyDict.put("Gb", MajorKeys.Fs);
+			
+			return new HashMap<String, MajorKeys>(keyDict);
+		}
 	  
 	  // Convert note_length non-terminal into a value which can be fed into a Music object
 	  private int lengthToTicks(MusicParser.Note_lengthContext lengthContext) {
