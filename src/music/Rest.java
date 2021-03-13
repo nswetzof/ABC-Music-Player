@@ -43,7 +43,11 @@ public class Rest implements Music {
 	
 	@Override
 	public void setTicksPerBeat(int ticks) {
+		int oldTicksPerBeat = this.ticksPerBeat;
+		
 		this.ticksPerBeat = ticks;
+		
+		this.duration *= this.ticksPerBeat / oldTicksPerBeat;
 	}
 	
 	/**

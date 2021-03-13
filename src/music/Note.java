@@ -69,7 +69,11 @@ public class Note implements Music {
 	
 	@Override
 	public void setTicksPerBeat(int ticks) {
+		int oldTicksPerBeat = this.ticksPerBeat;
+		
 		this.ticksPerBeat = ticks;
+		
+		this.duration *= this.ticksPerBeat / oldTicksPerBeat;
 	}
 	
 	// TODO: if numerator in a fraction is equal to 1, don't want to show (same for rests)

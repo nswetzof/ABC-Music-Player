@@ -60,11 +60,12 @@ public interface Music {
 	public static int leastCommonTicksPerBeat(List<Integer> list) {
 		int largest = list.stream().reduce((x, y) -> Math.min(x, y)).get();
 		
-		int c = 1;
+		int c = 0;
 		boolean isLCM = false;
 		
 		while(!isLCM && c < 128) {
 			c++;
+			
 			for(int num : list) {
 				if((largest * c) % num != 0) {
 					isLCM = false;

@@ -29,7 +29,7 @@ public class Concat implements Music {
 		this.first = m1;
 		this.second = m2;
 		
-		if(m1.getTicksPerBeat() / m2.getTicksPerBeat() == 0 || m2.getTicksPerBeat() / m1.getTicksPerBeat() == 0)
+		if(m1.getTicksPerBeat() % m2.getTicksPerBeat() == 0 || m2.getTicksPerBeat() % m1.getTicksPerBeat() == 0)
 			this.ticksPerBeat = Math.max(m1.getTicksPerBeat(), m2.getTicksPerBeat());
 		else
 			this.ticksPerBeat = Music.leastCommonTicksPerBeat(Arrays.asList(m1.getTicksPerBeat(), m2.getTicksPerBeat()));
@@ -65,8 +65,11 @@ public class Concat implements Music {
 	 * The time per tick is defined in the player parameter's fields. 
 	 */
 	public void play(SequencePlayer player, int atTick) {
-		first.setTicksPerBeat(this.ticksPerBeat); // TODO: add code to handle ticksPerBeat
+		first.setTicksPerBeat(this.ticksPerBeat);
 		second.setTicksPerBeat(this.ticksPerBeat);
+		
+//		System.err.println("First duration: " + first.getDuration());
+//		System.err.println("Second duration: " + second.getDuration());
 		
 		first.play(player, atTick);
 		second.play(player, atTick + first.getDuration());

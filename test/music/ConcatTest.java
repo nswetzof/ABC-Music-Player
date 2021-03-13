@@ -25,6 +25,11 @@ public class ConcatTest {
 	 * 		start at tick: 0, p
 	 * 
 	 * 	Verify output matches expected for duration, toString and play methods
+	 * 
+	 * Verify observer and mutator for ticksPerBeat field results in correct values after changing using:
+	 * 			first and second fields having same ticksPerBeat;
+	 * 			first and second fields having different ticksPerBeat with the larger divisible by the smaller;
+	 * 			first and second fields having different ticksPerBeat with the larger not divisible by the smaller
 	 */
 
 	// this test covers first of type Rest, second of type Rest, first has duration 0, second has duration 0,
@@ -42,6 +47,8 @@ public class ConcatTest {
 			
 			assertTrue(concat.getDuration() == 0);
 			assertTrue(concat.toString().equals(""));
+			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
 			
 			concat.play(player1, 0);
 			
@@ -70,6 +77,8 @@ public class ConcatTest {
 			assertTrue(concat.getDuration() == 2);
 			assertTrue(concat.toString().equals(".1/2"));
 			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
+			
 			concat.play(player1, 3);
 			
 			assertEquals(player2.toString(), player1.toString());
@@ -97,6 +106,8 @@ public class ConcatTest {
 			assertTrue(concat.getDuration() == 7);
 			assertTrue(concat.toString().equals(".1/2 .5/4"));
 			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
+			
 			concat.play(player1, 0);
 			
 			assertEquals(player2.toString(), player1.toString());
@@ -123,6 +134,8 @@ public class ConcatTest {
 			
 			assertTrue(concat.getDuration() == 2);
 			assertTrue(concat.toString().equals(".1/2"));
+			
+			assertTrue(concat.getTicksPerBeat() == ticksPerBeat);
 			
 			concat.play(player1, 3);
 			
@@ -153,6 +166,8 @@ public class ConcatTest {
 			assertTrue(concat.getDuration() == 7);
 			assertTrue(concat.toString().equals(".1/2 C5/4"));
 			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
+			
 			concat.play(player1, 0);
 			
 			player2.addNote(new Pitch('C').toMidiNote(), 2, 5);
@@ -181,6 +196,8 @@ public class ConcatTest {
 			
 			assertTrue(concat.getDuration() == 0);
 			assertTrue(concat.toString().equals(""));
+			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
 			
 			concat.play(player1, 0);
 			
@@ -211,6 +228,8 @@ public class ConcatTest {
 			
 			assertTrue(concat.getDuration() == 7);
 			assertTrue(concat.toString().equals("A1/2 C5/4"));
+			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
 			
 			concat.play(player1, 0);
 			
@@ -246,6 +265,8 @@ public class ConcatTest {
 			
 			assertTrue(concat.getDuration() == 7);
 			assertTrue(concat.toString().equals("A1/2 [C5/4EG3/2]"));
+			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
 			
 			concat.play(player1, 0);
 			
@@ -284,6 +305,9 @@ public class ConcatTest {
 			assertTrue(concat.getDuration() == 7);
 			assertTrue(concat.toString().equals("[C5/4EG3/2] A1/2"));
 			
+			System.err.println(concat.getTicksPerBeat());
+			assertTrue(concat.getTicksPerBeat() == ticksPerBeat);
+			
 			concat.play(player1, 3);
 			
 			player2.addNote(new Pitch('C').toMidiNote(), 3, 5);
@@ -320,6 +344,8 @@ public class ConcatTest {
 			assertTrue(concat.getDuration() == 2);
 			assertTrue(concat.toString().equals(".1/2"));
 			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
+			
 			concat.play(player1, 3);
 			
 			player2.addNote(new Pitch('A').toMidiNote(), 3, 0);
@@ -353,6 +379,8 @@ public class ConcatTest {
 			
 			assertTrue(concat.getDuration() == 10);
 			assertTrue(concat.toString().equals("A C C1/2"));
+			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
 			
 			concat.play(player1, 0);
 			
@@ -392,6 +420,8 @@ public class ConcatTest {
 			assertTrue(concat.getDuration() == 8);
 			assertTrue(concat.toString().equals("A C"));
 			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
+			
 			concat.play(player1, 0);
 			
 			player2.addNote(new Pitch('A').toMidiNote(), 0, 4);
@@ -430,6 +460,8 @@ public class ConcatTest {
 			assertTrue(concat.getDuration() == 12);
 			assertTrue(concat.toString().equals("A C .3/4 G1/4"));
 			
+			assertTrue(concat.getTicksPerBeat() >= ticksPerBeat);
+			
 			concat.play(player1, 3);
 			
 			player2.addNote(new Pitch('A').toMidiNote(), 3, 4);
@@ -443,5 +475,55 @@ public class ConcatTest {
 		} catch(InvalidMidiDataException imde) {
 			fail(imde.getStackTrace().toString());
 		}
+	}
+	
+	// tests for ticksPerBeat observer and mutator
+	
+	// this test covers same ticksPerBeat in first and second fields
+	@Test
+	public void testTicksPerBeatSame() {
+		Note note1 = new Note(4, 4, new Pitch('A'));
+		Note note2 = new Note(4, 4, new Pitch('C'));
+		
+		Music concat = new Concat(note1, note2);
+		
+		assertTrue(concat.getTicksPerBeat() >= 4);
+		
+		concat.setTicksPerBeat(8);
+		
+		assertTrue(concat.getTicksPerBeat() == 8);
+		assertTrue(concat.getDuration() == 16);
+	}
+	
+	// this test covers different ticksPerBeat in first and second fields with larger number divisible by smaller
+	@Test
+	public void testTicksPerBeatDifferentWithLargerDivisible() {
+		Note note1 = new Note(4, 8, new Pitch('A'));
+		Note note2 = new Note(4, 4, new Pitch('C'));
+		
+		Music concat = new Concat(note1, note2);
+		
+		assertTrue(concat.getTicksPerBeat() >= 8);
+		
+		concat.setTicksPerBeat(24);
+		
+		assertTrue(concat.getTicksPerBeat() == 24);
+		assertTrue(concat.getDuration() == 36);
+	}
+	
+	// this test covers different ticksPerBeat in first and second fields with larger number not divisible by smaller
+	@Test
+	public void testTicksPerBeatDifferentWithLargerNotDivisible() {
+		Note note1 = new Note(4, 6, new Pitch('A'));
+		Note note2 = new Note(4, 4, new Pitch('C'));
+		
+		Music concat = new Concat(note1, note2);
+		
+		assertTrue(concat.getTicksPerBeat() >= 12);
+		
+		concat.setTicksPerBeat(12);
+		
+		assertTrue(concat.getTicksPerBeat() == 12);
+		assertTrue(concat.getDuration() == 20);
 	}
 }
