@@ -248,7 +248,7 @@ public class MakeSong extends MusicBaseListener {
 		  }
 		  else {
 			  this.keyOffset = MakeSong.PITCH_OFFSETS.get(MajorKeys.valueOf(
-					  keyMap.get(key.substring(0, key.length() - 1)))
+					  keyMap.get(key))
 					  .ordinal());
 		  }
 	  }
