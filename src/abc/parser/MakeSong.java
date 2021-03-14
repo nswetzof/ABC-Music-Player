@@ -18,8 +18,12 @@ import music.*;
 public class MakeSong extends MusicBaseListener {
 	private Map<String, Music> voices = new HashMap<String, Music>();
 	private Stack<Integer> intStack = new Stack<Integer>();
+	
 	private Stack<Music> stack = new Stack<Music>();
 	private Stack<Pitch> pitchStack = new Stack<Pitch>();
+	
+	// map of voice name keys to Music object stacks for storing Music elements that can be repeated
+	private Map<String, Stack<Music>> repeatStacks = new HashMap<String, Stack<Music>>();
 	
 	private boolean setLength = false;
 	private boolean setMeter = false;
@@ -291,15 +295,17 @@ public class MakeSong extends MusicBaseListener {
 	   * Remove all temporary overrides of the key signature upon entering a new bar
 	   */
 	  @Override public void exitElement(MusicParser.ElementContext ctx) {
-		  if(ctx.BARLINE() != null)
+		  if(ctx.BARLINE() != null) {
 			  this.barlineOffset.clear();
+			  stack.clear(); // remove any elements to be repeated off the stack TODO: make sure this is okay
+		  }
+		  else if(ctx.REPEAT() != null) {
+			  switch(ctx.REPEAT().getText()) {
+			  	case "|:":
+			  		
+			  }
+		  }
 	  }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterNote_element(MusicParser.Note_elementContext ctx) { }
 	  
 	  /**
 	   * Add Music element with type and properties determined by descendant nodes
@@ -308,7 +314,7 @@ public class MakeSong extends MusicBaseListener {
 		  System.err.println("Adding " + stack.peek() + " to song");
 		  song.addElement(currentVoice, stack.pop());
 		  
-		  assert(stack.empty());
+		  
 	  }
 	  
 	  @Override public void exitNote(MusicParser.NoteContext ctx) {

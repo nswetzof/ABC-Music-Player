@@ -331,17 +331,14 @@ public class Song {
 	 * Play the song represented by this object
 	 */
 	public void play() {
-		// TODO: will create SequencePlayer object here
-		
-		// Update all Music objects and their children recursively to define uniform number of ticks per beat
-		//	for SequencePlayer object
-		for(Music m : voices.values())
-			m.setTicksPerBeat(this.ticksPerBeat);
 		
 		try {
 			SequencePlayer player = new SequencePlayer(this.getTempo().second(), this.ticksPerBeat);
 			
+			// Update all Music objects and their children recursively to define uniform number of ticks per beat
+			//	for SequencePlayer object.  Then play piece.
 			for(Music m : voices.values()) {
+				m.setTicksPerBeat(this.ticksPerBeat);
 				m.play(player, 0);
 			}
 			

@@ -34,7 +34,7 @@ KEYNOTE: 'K:' (BASENOTE | BASENOTE '#' | 'Ab' | 'Bb' | 'Cb' | 'Db' | 'Eb' | 'Fb'
 
 body: abc_line+;
 abc_line: element* EOL | mid_tune_field | comment;
-element: note_element | tuplet_element | BARLINE | NTH_REPEAT;
+element: note_element | tuplet_element | BARLINE | REPEAT | NTH_REPEAT;
 
 note_element: note | multi_note;
 
@@ -54,9 +54,6 @@ multi_note: '[' note+ ']';
 /* a voice field might reappear in the middle of a piece to indicate the change of a voice */
 mid_tune_field: field_voice;
 
-
-/*line: (~[_] BASENOTE ('\''* | ','*) meter_fraction?)+ | [\[]:];*/
-
 /********** Header tokens **********/
 //KEY_ACCIDENTAL: [#b];
 MODE_MINOR: 'm';
@@ -71,7 +68,8 @@ accidental: '^' | '^^' | '_' | '__' | EQUALS;
 
 OCTAVE: '\''+ | ','+ ;
 REST: 'z';
-BARLINE: '|' | '||' | '[|' | '|]' | ':|' | '|:';
+REPEAT: ':|' | '|:' | '[|' | '|]';
+BARLINE: '|' | '||';
 NTH_REPEAT: '[1' | '[2';
 
 /********** General tokens **********/
