@@ -68,9 +68,6 @@ public class Concat implements Music {
 		first.setTicksPerBeat(this.ticksPerBeat);
 		second.setTicksPerBeat(this.ticksPerBeat);
 		
-//		System.err.println("First duration: " + first.getDuration());
-//		System.err.println("Second duration: " + second.getDuration());
-		
 		first.play(player, atTick);
 		second.play(player, atTick + first.getDuration());
 	}

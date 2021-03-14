@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import abc.parser.StructureLexer;
 import abc.parser.StructureListener;
 import abc.parser.StructureParser;
+import music.Song;
 import abc.parser.MakeSong;
 import abc.parser.MusicBaseListener;
 import abc.parser.MusicLexer;
@@ -45,7 +46,7 @@ public class Main {
 
     public static void main(String[] args) {
     	try {
-	    	FileInputStream in = new FileInputStream("sample_abc/prelude.abc");
+	    	FileInputStream in = new FileInputStream("sample_abc/sample3.abc");
 	    	CharStream stream = new ANTLRInputStream(in);
 	    	
 	    	MusicLexer lexer = new MusicLexer(stream);
@@ -56,10 +57,15 @@ public class Main {
 	    	
 	    	System.err.println(tree.toStringTree(parser));
 	    	
-	    	Trees.inspect(tree, parser);
+//	    	Trees.inspect(tree, parser);
 	    	
 	    	MakeSong songMaker = new MakeSong();
 	    	new ParseTreeWalker().walk(songMaker, tree);
+	    	
+	    	Song s = songMaker.getSong();
+	    	s.play();
+	    	
+	    	songMaker.getSong().printHeader();
 //	    	
 //	    	ParseTreeWalker walker = new ParseTreeWalker();
 //	    	MusicListener listener = new MusicBaseListener();

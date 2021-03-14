@@ -12,7 +12,7 @@ public class Note implements Music {
 	 * Rep invariant:
 	 * 	duration >= 0;
 	 * Abstraction function:
-	 * 	Represents a note with pitch given by the 'pitch' field of 'duration' number of beats
+	 * 	Represents a note with pitch given by the 'pitch' field of 'duration' number of ticks
 	 * Safety from rep exposure:
 	 * 	TODO: complete
 	 */
@@ -62,9 +62,7 @@ public class Note implements Music {
 	
 	@Override
 	public int getTicksPerBeat() {
-		int oldTicksPerBeat = this.ticksPerBeat;
 		return this.ticksPerBeat;
-		
 	}
 	
 	@Override

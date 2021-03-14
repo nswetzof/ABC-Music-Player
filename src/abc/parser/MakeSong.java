@@ -19,6 +19,7 @@ public class MakeSong extends MusicBaseListener {
 	private Map<String, Music> voices = new HashMap<String, Music>();
 	private Stack<Integer> intStack = new Stack<Integer>();
 	private Stack<Music> stack = new Stack<Music>();
+	private Stack<Pitch> pitchStack = new Stack<Pitch>();
 	
 	private boolean setLength = false;
 	private boolean setMeter = false;
@@ -213,6 +214,8 @@ public class MakeSong extends MusicBaseListener {
 		  if(!voices.containsKey(voice)) {
 			  song.addVoice(voice);
 		  }
+		  
+		  this.barlineOffset.clear();
 	  }
 
 	  /**
@@ -283,12 +286,14 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void enterElement(MusicParser.ElementContext ctx) { }
+	  
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Remove all temporary overrides of the key signature upon entering a new bar
 	   */
-	  @Override public void exitElement(MusicParser.ElementContext ctx) { }
+	  @Override public void exitElement(MusicParser.ElementContext ctx) {
+		  if(ctx.BARLINE() != null)
+			  this.barlineOffset.clear();
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -300,24 +305,21 @@ public class MakeSong extends MusicBaseListener {
 	   * Add Music element with type and properties determined by descendant nodes
 	   */
 	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) {
+		  System.err.println("Adding " + stack.peek() + " to song");
 		  song.addElement(currentVoice, stack.pop());
+		  
+		  assert(stack.empty());
 	  }
 	  
 	  @Override public void exitNote(MusicParser.NoteContext ctx) {
 		  
 		  System.out.println("Note Terminal: " + ctx.getText());
-//		  System.out.println(this.lengthToTicks(ctx.note_length()));
-		  // No listener for REST terminal, so it will not push to the stack
-		  if(stack.empty())
+		  if(ctx.note_or_rest().REST() != null)
 			  stack.push(new Rest(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat()));
 		  
 		  else {
-			  String note = ctx.note_or_rest().getText();
-//			  System.out.println("Note: " + note);
-			  //stack.push(new Note(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat(),
-			  //???)) // TODO: need function to parse BASENOTE tokens into pitches based on key signature
+			  stack.push(new Note(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat(), pitchStack.pop()));
 		  }
-//		  stack.pop(item)
 	  }
 
 	  /**
@@ -327,24 +329,14 @@ public class MakeSong extends MusicBaseListener {
 	   */
 	  @Override public void exitNote_or_rest(MusicParser.Note_or_restContext ctx) {
 	  }
+	  
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterPitch(MusicParser.PitchContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Push new Pitch object onto the stack with properties determined by pitch token
 	   */
 	  @Override public void exitPitch(MusicParser.PitchContext ctx) {
-		  System.out.println("Pitch: " + ctx.getText());
 		  String note = ctx.BASENOTE().getText();
 		  String octave = (ctx.OCTAVE() == null ? "" : ctx.OCTAVE().getText());
 		  int offset = 0;
-		  
-		  Pitch p = new Pitch(note.toUpperCase().charAt(0));
 		  
 		  if(ctx.accidental() != null) {
 			  
@@ -387,15 +379,9 @@ public class MakeSong extends MusicBaseListener {
 				  offset -= Pitch.OCTAVE * octave.length();
 		  }
 		  
-		  p.transpose(offset);
-		  System.err.println("offset: " + offset);
+		  pitchStack.push(new Pitch(note.toUpperCase().charAt(0)).transpose(offset));
 	  }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterNote_length(MusicParser.Note_lengthContext ctx) { }
+	  
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -426,18 +412,19 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitTuplet_spec(MusicParser.Tuplet_specContext ctx) { }
+
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Add Chord to stack with notes based on multi_note non-terminal
 	   */
-	  @Override public void enterMulti_note(MusicParser.Multi_noteContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitMulti_note(MusicParser.Multi_noteContext ctx) { }
+	  @Override public void exitMulti_note(MusicParser.Multi_noteContext ctx) {
+		  List<Note> notes = new ArrayList<Note>();
+		  
+		  while(!stack.empty()) {
+			  notes.add((Note)stack.pop()); // stack should only contain Note objects at this point
+		  }
+		  
+		  stack.push(new Chord(notes));
+	  }
 	  /**
 	   * {@inheritDoc}
 	   *
@@ -548,7 +535,7 @@ public class MakeSong extends MusicBaseListener {
 		  // x
 		  if(noteLength.matches("\\d+")) {
 			  denominator = 1;
-			  numerator = Integer.valueOf(noteLength) * song.getTicksPerBeat();
+			  numerator = Integer.valueOf(noteLength);
 		  }
 		  
 		  // x/y

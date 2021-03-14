@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiUnavailableException;
+
 import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -334,44 +337,24 @@ public class Song {
 		//	for SequencePlayer object
 		for(Music m : voices.values())
 			m.setTicksPerBeat(this.ticksPerBeat);
+		
+		try {
+			SequencePlayer player = new SequencePlayer(this.getTempo().second(), this.ticksPerBeat);
+			
+			for(Music m : voices.values()) {
+				m.play(player, 0);
+			}
+			
+			player.play();
+			
+		} catch(InvalidMidiDataException imde) {
+			System.err.println(imde.getMessage());
+			System.exit(1);
+		} catch(MidiUnavailableException mue) {
+			System.err.println(mue.getMessage());
+			System.exit(1);
+		}
 	}
-	
-//	/** Set up mappings of key signature strings to MajorKeys enum which corresponds to indices in list of
-//	 * 	pitch offsets (PITCH_OFFSETS field)
-//	 */
-//	private void initializeKeyMap() { // TODO: MAY WANT TO PUT ALL THIS IN MAKESONG BECAUSE KEY SIGNATURES CAN BE
-//									  //		IN THE BODY OF THE SONG
-//									  //		OR:
-//									  //		MAYBE CAN HAVE A FUNCTION 'changeKeySignature' to change within Song
-//									  //		OR: DON'T THINK I NEED EITHER, JUST COMPARING PITCHES SINCE WITHIN OCTAVE
-//		keyMap.put("A", MajorKeys.A);
-//		keyMap.put("Ab", MajorKeys.Ab);
-//		keyMap.put("A#", MajorKeys.Bb);
-//		
-//		keyMap.put("B", MajorKeys.B);
-//		keyMap.put("B#", MajorKeys.C);
-//		keyMap.put("Bb", MajorKeys.Bb);
-//		
-//		keyMap.put("C", MajorKeys.C);
-//		keyMap.put("C#", MajorKeys.Db);
-//		keyMap.put("Cb", MajorKeys.B);
-//		
-//		keyMap.put("D", MajorKeys.D);
-//		keyMap.put("D#", MajorKeys.Eb);
-//		keyMap.put("Db", MajorKeys.Db);
-//		
-//		keyMap.put("E", MajorKeys.E);
-//		keyMap.put("E#", MajorKeys.F);
-//		keyMap.put("Eb", MajorKeys.Eb);
-//		
-//		keyMap.put("F", MajorKeys.F);
-//		keyMap.put("F#", MajorKeys.Fs);
-//		keyMap.put("Fb", MajorKeys.E);
-//		
-//		keyMap.put("G", MajorKeys.G);
-//		keyMap.put("G#", MajorKeys.Ab);
-//		keyMap.put("Gb", MajorKeys.Fs);
-//	}
 	
 	/**
 	 * Parses an abc file and converts it to a Music object
