@@ -27,8 +27,10 @@ public class MakeSong extends MusicBaseListener {
 	private final Map<String, String> keyMap = generateKeyMap(); // maps key String to MajorKeys value
 	private List<Integer> keyOffset; // store the pitch offsets for each note based on accidentals 
 									 //	based on the 'key' field
-	private Map<String, Integer> barlineOffset; // store pitch offsets to be applied to just the barline with keys
-												// represented by the pitch and values represented by the pitch offsets
+	
+	// store pitch offsets to be applied to just the barline with keys
+	// represented by the pitch and values represented by the pitch offsets
+	private Map<String, Integer> barlineOffset = new HashMap<String, Integer>(); 
 	
 	private static enum MajorKeys {C, G, D, A, E, B, Fs, F, Bb, Eb, Ab, Db};
 	private static enum MinorKeys {A, E, B, Fs, Db, Ab, Eb, D, G, C, F, Bb};
@@ -344,19 +346,6 @@ public class MakeSong extends MusicBaseListener {
 		  
 		  Pitch p = new Pitch(note.toUpperCase().charAt(0));
 		  
-		  // lowercase letters are one octave up
-		  if(note != note.toUpperCase())
-			  offset += Pitch.OCTAVE;
-//			  p.transpose(Pitch.OCTAVE);
-		  
-		  // change amount to transpose pitch based on octave symbols
-		  if(octave != "") {
-			  if(octave.charAt(0) == '\'')
-				  offset += octave.length();
-			  else // ',' symbol
-				  offset -= octave.length();
-		  }
-		  
 		  if(ctx.accidental() != null) {
 			  
 			  switch(ctx.accidental().getText()) {
@@ -377,12 +366,25 @@ public class MakeSong extends MusicBaseListener {
 			  		break;
 			  }
 			  
-//			  p.transpose(offset);
-			  barlineOffset.put(note + octave, -2);			  
+			  this.barlineOffset.put(note + octave, offset);
 		  }
 		  else {
-			  offset += this.keyOffset.get(note.charAt(0) - 'A');
-//			  p.transpose(this.keyOffset.get(this.keyMap.get(note.toUpperCase()).ordinal()));
+			  if(barlineOffset.containsKey(note))
+				  offset += barlineOffset.get(note);
+			  else
+				  offset += this.keyOffset.get(note.toUpperCase().charAt(0) - 'A');
+		  }
+		  
+		// lowercase letters are one octave up
+		  if(note != note.toUpperCase())
+			  offset += Pitch.OCTAVE;
+		  
+		  // change amount to transpose pitch based on octave symbols
+		  if(octave != "") {
+			  if(octave.charAt(0) == '\'')
+				  offset += Pitch.OCTAVE * octave.length();
+			  else // ',' symbol
+				  offset -= Pitch.OCTAVE * octave.length();
 		  }
 		  
 		  p.transpose(offset);
