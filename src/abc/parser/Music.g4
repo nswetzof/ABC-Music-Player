@@ -58,7 +58,7 @@ mid_tune_field: field_voice;
 //KEY_ACCIDENTAL: [#b];
 MODE_MINOR: 'm';
 TITLE: 'T:' .*? EOL;
-COMPOSER: 'C:' .*? EOL;
+COMPOSER: 'C:' ~[|]*? EOL;
 /*TEXT: [a-zA-Z][. a-zA-Z]+;*/
 
 /********** Music tokens **********/

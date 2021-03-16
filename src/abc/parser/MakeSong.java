@@ -23,7 +23,7 @@ public class MakeSong extends MusicBaseListener {
 	private Stack<Pitch> pitchStack = new Stack<Pitch>();
 	
 	// map of voice name keys to Music object stacks for storing Music elements that can be repeated
-	private Map<String, Stack<Music>> repeatStacks = new HashMap<String, Stack<Music>>();
+//	private Map<String, Stack<Music>> repeatStacks = new HashMap<String, Stack<Music>>(); // TODO: MIGHT HAVE REPEAT MAP IN SONG INSTEAD
 	
 	private boolean setLength = false;
 	private boolean setMeter = false;
@@ -299,11 +299,23 @@ public class MakeSong extends MusicBaseListener {
 			  this.barlineOffset.clear();
 			  stack.clear(); // remove any elements to be repeated off the stack TODO: make sure this is okay
 		  }
+		  
 		  else if(ctx.REPEAT() != null) {
 			  switch(ctx.REPEAT().getText()) {
 			  	case "|:":
-			  		
+			  		song.resetRepeat(this.currentVoice);
+			  		song.setPauseRepeat(false);
+			  		break;
+			  	case ":|":
+			  		song.applyRepeat(this.currentVoice);
+			  	case "|]":
+			  		song.setPauseRepeat(false);
 			  }
+		  }
+		  
+		  else if(ctx.NTH_REPEAT() != null) {
+			  if(ctx.NTH_REPEAT().getText().equals("[1"))
+				  song.setPauseRepeat(true);
 		  }
 	  }
 	  

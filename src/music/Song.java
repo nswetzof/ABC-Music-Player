@@ -67,34 +67,10 @@ public class Song {
 	private Pair<Double, Integer> tempo;
 	private String key;
 	
-//	private final Map<String, MajorKeys> keyMap = new HashMap<String, MajorKeys>(); // maps key String to MajorKeys value
-//	private List<Integer> keyOffset; // store the pitch offsets for each note based on accidentals 
-//									 //	based on the 'key' field
-//	private Map<String, Integer> barlineOffset; // store pitch offsets to be applied to just the barline with keys
-//												// represented by the pitch and values represented by the pitch offsets
-//	
-//	private static enum MajorKeys {C, G, D, A, E, B, Fs, F, Bb, Eb, Ab, Db};
-//	private static enum MinorKeys {A, E, B, Fs, Cs, Gs, Ds, D, G, C, F, Bb};
-//	
-//	// list of pitch offsets for all key signatures. Each element in the list is a list of the offset amounts for each
-//	// note where element[i] corresponds with [A, B, C, D, E, F, G][i]
-//	private static final List<List<Integer>> PITCH_OFFSETS = Arrays.asList(
-//			Arrays.asList(0, 0, 0, 0, 0, 0, 0), // C
-//			Arrays.asList(0, 0, 0, 0, 0, 1, 0), // G
-//			Arrays.asList(0, 0, 1, 0, 0, 1, 0), // D
-//			Arrays.asList(0, 0, 1, 0, 0, 1, 1), // A
-//			Arrays.asList(0, 0, 1, 1, 0, 1, 1), // E
-//			Arrays.asList(1, 0, 1, 1, 0, 1, 1), // B or Cb
-//			Arrays.asList(1, 0, 1, 1, 1, 1, 1), // F# or Gb
-//			Arrays.asList(0, -1, 0, 0, 0, 0, 0), // F
-//			Arrays.asList(0, -1, 0, 0, -1, 0, 0), // Bb
-//			Arrays.asList(-1, -1, 0, 0, -1, 0, 0), // Eb
-//			Arrays.asList(-1, -1, 0, -1, -1, 0, 0), // Ab
-//			Arrays.asList(-1, -1, 0, -1, -1, 0, -1) // Db or C#
-//			);
-	
 	// body information
 	private int ticksPerBeat;
+	private Map<String, Music> repeats;
+	private boolean pauseRepeat;
 	
 	/*
 	 * Rep invariant:
@@ -128,6 +104,7 @@ public class Song {
 		this.key = "";
 		
 		this.ticksPerBeat = 1;
+		repeats = new HashMap<String, Music>();
 		
 //		this.initializeKeyMap();
 	}
@@ -276,6 +253,14 @@ public class Song {
 	}
 	
 	/**
+	 * Determines whether Song will continue to store new Music elements for later repetition
+	 * @param repeat false if elements will be stored for a future repeat, true if not
+	 */
+	public void setPauseRepeat(boolean repeat) {
+		this.pauseRepeat = repeat;
+	}
+	
+	/**
 	 * Add a Music object associated with a named voice
 	 * @param voiceName represents the name associated with the voice
 	 * @return false if Music object is already present, true otherwise
@@ -285,6 +270,7 @@ public class Song {
 			return false;
 		
 		voices.put(voiceName, new Rest(0, 1));
+		repeats.put(voiceName, new Rest(0, 1));
 		
 		checkRep();
 		
@@ -303,15 +289,6 @@ public class Song {
 		System.out.println("Key: " + this.getKey());
 	}
 	
-	// TODO: LEFT OFF HERE.  MAKE SURE I WANT TO DO IT IN NOTE AND NOT DO MORE NOTE STRING PARSING IN MAKESONG
-	/**
-	 * Add a note to the song
-	 * @param noteString
-	 */
-	public void addNote(String noteString) {
-		// TODO: implement
-	}
-	
 	/** 
 	 * Add musical element to the song
 	 * @param voice name of voice which will play the musical element
@@ -322,9 +299,30 @@ public class Song {
 		
 		voices.put(voiceName, new Concat(voices.get(voiceName), element));
 		
+		if(this.pauseRepeat == false)
+			repeats.put(voiceName, new Concat(repeats.get(voiceName), element));
+		
 		checkRep();
 		
 		return true;
+	}
+	
+	/**
+	 * Add Music elements since a start repeat bar (:|) or the beginning of the current major section to the end of
+	 * piece for a given voice.
+	 * @param voiceName voice to play the repeated Music elements
+	 */
+	public void applyRepeat(String voiceName) {
+		voices.put(voiceName,  new Concat(voices.get(voiceName), repeats.get(voiceName)));
+		this.resetRepeat(voiceName);
+	}
+	
+	/**
+	 * Clears all previous Music elements from being repeated for a given voice name.
+	 * @param voiceName name of voice going into the next section
+	 */
+	public void resetRepeat(String voiceName) {
+		repeats.put(voiceName, new Rest(0, 1));
 	}
 	
 	/**
