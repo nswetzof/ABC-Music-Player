@@ -292,6 +292,7 @@ public class Song {
 	/** 
 	 * Add musical element to the song
 	 * @param voice name of voice which will play the musical element
+	 * @return false if voice does not exist, true otherwise
 	 */
 	public boolean addElement(String voiceName, Music element) {
 		if(!voices.containsKey(voiceName))

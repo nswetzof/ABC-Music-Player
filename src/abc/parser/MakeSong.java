@@ -292,12 +292,20 @@ public class MakeSong extends MusicBaseListener {
 	  @Override public void enterElement(MusicParser.ElementContext ctx) { }
 	  
 	  /**
-	   * Remove all temporary overrides of the key signature upon entering a new bar
+	   * Add Music element with type and properties determined by descendant nodes, or parse repeat token, and
+	   * remove all temporary overrides of the key signature upon entering a new bar
 	   */
 	  @Override public void exitElement(MusicParser.ElementContext ctx) {
+		  if(!stack.empty()) {
+			  System.err.println("Adding " + stack.peek() + " to song");
+			  song.addElement(currentVoice, stack.pop());
+			  
+			  return;
+		  }
+		  
 		  if(ctx.BARLINE() != null) {
 			  this.barlineOffset.clear();
-			  stack.clear(); // remove any elements to be repeated off the stack TODO: make sure this is okay
+//			  stack.clear(); // remove any elements to be repeated off the stack TODO: make sure this is okay
 		  }
 		  
 		  else if(ctx.REPEAT() != null) {
@@ -323,9 +331,6 @@ public class MakeSong extends MusicBaseListener {
 	   * Add Music element with type and properties determined by descendant nodes
 	   */
 	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) {
-		  System.err.println("Adding " + stack.peek() + " to song");
-		  song.addElement(currentVoice, stack.pop());
-		  
 		  
 	  }
 	  
@@ -406,18 +411,61 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitNote_length(MusicParser.Note_lengthContext ctx) { }
+
 	  /**
 	   * {@inheritDoc}
 	   *
 	   * <p>The default implementation does nothing.</p>
 	   */
-	  @Override public void enterTuplet_element(MusicParser.Tuplet_elementContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitTuplet_element(MusicParser.Tuplet_elementContext ctx) { }
+	  @Override public void exitTuplet_element(MusicParser.Tuplet_elementContext ctx) {
+		  Stack<Note> tupletNotes = new Stack<Note>();
+		  
+		  List<Integer> ticksPerBeatList = new ArrayList<Integer>();
+		  ticksPerBeatList.add(song.getTicksPerBeat());
+		  
+		  while(!stack.empty()) {
+			  Note note = (Note)stack.pop();
+			  int duration = note.getDuration();
+			  int ticksPerBeat = note.getTicksPerBeat();
+			  
+			  switch(ctx.tuplet_spec().getText()) {
+			  	case "(2":
+			  		
+			  		if(duration % 2 != 0) {
+			  			duration *= 3;
+			  			ticksPerBeat *= 2;
+			  		}
+			  		else
+			  			duration *= 3/2;
+			  		break;
+			  	case "(3":
+			  		if(duration % 3 != 0) {
+			  			duration *= 2;
+			  			ticksPerBeat *= 3;
+			  		}
+			  		else
+			  			duration *= 2/3;
+			  		break;
+			  	case "(4":
+			  		if(duration % 4 != 0) {
+			  			duration *= 3;
+			  			ticksPerBeat *= 4;
+			  		}
+			  		else
+			  			duration *= 3/4;
+			  		break;
+			  	}
+			  
+			  	tupletNotes.push(new Note(duration, ticksPerBeat, note.getPitch()));
+			  	ticksPerBeatList.add(ticksPerBeat);
+		  }
+		  
+		  while(!tupletNotes.empty()) {
+			  song.addElement(currentVoice, tupletNotes.pop());
+			  song.setTicksPerBeat(Music.leastCommonTicksPerBeat(ticksPerBeatList));
+		  }
+	  }
+	  
 	  /**
 	   * {@inheritDoc}
 	   *
