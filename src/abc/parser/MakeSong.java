@@ -297,7 +297,7 @@ public class MakeSong extends MusicBaseListener {
 	   */
 	  @Override public void exitElement(MusicParser.ElementContext ctx) {
 		  if(!stack.empty()) {
-			  System.err.println("Adding " + stack.peek() + " to song");
+//			  System.err.println("Adding " + stack.peek() + " to song");
 			  song.addElement(currentVoice, stack.pop());
 			  
 			  return;
@@ -305,7 +305,6 @@ public class MakeSong extends MusicBaseListener {
 		  
 		  if(ctx.BARLINE() != null) {
 			  this.barlineOffset.clear();
-//			  stack.clear(); // remove any elements to be repeated off the stack TODO: make sure this is okay
 		  }
 		  
 		  else if(ctx.REPEAT() != null) {
@@ -331,12 +330,12 @@ public class MakeSong extends MusicBaseListener {
 	   * Add Music element with type and properties determined by descendant nodes
 	   */
 	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) {
-		  
+		  System.out.println("Note element " + stack.peek());
 	  }
 	  
 	  @Override public void exitNote(MusicParser.NoteContext ctx) {
 		  
-		  System.out.println("Note Terminal: " + ctx.getText());
+//		  System.out.println("Note Terminal: " + ctx.getText());
 		  if(ctx.note_or_rest().REST() != null)
 			  stack.push(new Rest(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat()));
 		  
@@ -418,66 +417,61 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitTuplet_element(MusicParser.Tuplet_elementContext ctx) {
+		  System.err.println("Tuplet: " + ctx.getText());
 		  Stack<Note> tupletNotes = new Stack<Note>();
 		  
 		  List<Integer> ticksPerBeatList = new ArrayList<Integer>();
 		  ticksPerBeatList.add(song.getTicksPerBeat());
 		  
-		  while(!stack.empty()) {
-			  Note note = (Note)stack.pop();
-			  int duration = note.getDuration();
-			  int ticksPerBeat = note.getTicksPerBeat();
+		  Note note = (Note)stack.pop();
+		  int duration = note.getDuration();
+		  int ticksPerBeat = note.getTicksPerBeat();
+		  
+		  switch(ctx.getText().substring(0, 2)) {
+		  	case "(2":
+		  		
+		  		if(duration % 2 != 0) {
+		  			duration *= 3;
+		  			ticksPerBeat *= 2;
+		  		}
+		  		else
+		  			duration *= 3/2;
+		  		break;
+		  	case "(3":
+		  		if(duration % 3 != 0) {
+		  			duration *= 2;
+		  			ticksPerBeat *= 3;
+		  		}
+		  		else
+		  			duration *= 2/3;
+		  		break;
+		  	case "(4":
+		  		if(duration % 4 != 0) {
+		  			duration *= 3;
+		  			ticksPerBeat *= 4;
+		  		}
+		  		else
+		  			duration *= 3/4;
+		  		break;
+		  }
+		  
+		  ticksPerBeatList.add(ticksPerBeat);
+		  
+		  while(note != null) {
+			  tupletNotes.push(new Note(duration, ticksPerBeat, note.getPitch()));
 			  
-			  switch(ctx.tuplet_spec().getText()) {
-			  	case "(2":
-			  		
-			  		if(duration % 2 != 0) {
-			  			duration *= 3;
-			  			ticksPerBeat *= 2;
-			  		}
-			  		else
-			  			duration *= 3/2;
-			  		break;
-			  	case "(3":
-			  		if(duration % 3 != 0) {
-			  			duration *= 2;
-			  			ticksPerBeat *= 3;
-			  		}
-			  		else
-			  			duration *= 2/3;
-			  		break;
-			  	case "(4":
-			  		if(duration % 4 != 0) {
-			  			duration *= 3;
-			  			ticksPerBeat *= 4;
-			  		}
-			  		else
-			  			duration *= 3/4;
-			  		break;
-			  	}
-			  
-			  	tupletNotes.push(new Note(duration, ticksPerBeat, note.getPitch()));
-			  	ticksPerBeatList.add(ticksPerBeat);
+			  if(stack.empty())
+				  note = null;
+			  else
+				  note = (Note)stack.pop();
 		  }
 		  
 		  while(!tupletNotes.empty()) {
+			  System.out.println("Adding " + tupletNotes.peek().toString() + " to song.");
 			  song.addElement(currentVoice, tupletNotes.pop());
 			  song.setTicksPerBeat(Music.leastCommonTicksPerBeat(ticksPerBeatList));
 		  }
 	  }
-	  
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterTuplet_spec(MusicParser.Tuplet_specContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitTuplet_spec(MusicParser.Tuplet_specContext ctx) { }
 
 	  /**
 	   * Add Chord to stack with notes based on multi_note non-terminal

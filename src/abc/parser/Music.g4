@@ -45,8 +45,9 @@ pitch: accidental? BASENOTE OCTAVE?;
 note_length: DIGIT | DIGIT? '/' DIGIT?;
 
 /* tuplets */
-tuplet_element: tuplet_spec note_element+;
-tuplet_spec: '(' DIGIT;
+//tuplet_element: tuplet_spec note_element+;
+tuplet_element: '(2' note_element note_element | '(3' note_element note_element note_element | '(4' note_element note_element note_element note_element;
+//tuplet_spec: '(' DIGIT;
 
 /* chords */
 multi_note: '[' note+ ']';
