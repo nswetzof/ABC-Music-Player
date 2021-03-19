@@ -417,7 +417,6 @@ public class MakeSong extends MusicBaseListener {
 	   * <p>The default implementation does nothing.</p>
 	   */
 	  @Override public void exitTuplet_element(MusicParser.Tuplet_elementContext ctx) {
-		  System.err.println("Tuplet: " + ctx.getText());
 		  Stack<Note> tupletNotes = new Stack<Note>();
 		  
 		  List<Integer> ticksPerBeatList = new ArrayList<Integer>();
@@ -435,7 +434,7 @@ public class MakeSong extends MusicBaseListener {
 		  			ticksPerBeat *= 2;
 		  		}
 		  		else
-		  			duration *= 3/2;
+		  			duration = duration * 3 / 2;
 		  		break;
 		  	case "(3":
 		  		if(duration % 3 != 0) {
@@ -443,7 +442,7 @@ public class MakeSong extends MusicBaseListener {
 		  			ticksPerBeat *= 3;
 		  		}
 		  		else
-		  			duration *= 2/3;
+		  			duration = duration * 2 / 3;
 		  		break;
 		  	case "(4":
 		  		if(duration % 4 != 0) {
@@ -451,7 +450,7 @@ public class MakeSong extends MusicBaseListener {
 		  			ticksPerBeat *= 4;
 		  		}
 		  		else
-		  			duration *= 3/4;
+		  			duration = duration * 3 / 4;
 		  		break;
 		  }
 		  
@@ -467,7 +466,6 @@ public class MakeSong extends MusicBaseListener {
 		  }
 		  
 		  while(!tupletNotes.empty()) {
-			  System.out.println("Adding " + tupletNotes.peek().toString() + " to song.");
 			  song.addElement(currentVoice, tupletNotes.pop());
 			  song.setTicksPerBeat(Music.leastCommonTicksPerBeat(ticksPerBeatList));
 		  }
@@ -581,6 +579,7 @@ public class MakeSong extends MusicBaseListener {
 			return new HashMap<String, String>(keyDict);
 		}
 	  
+		// TODO: think this is giving note lengths (in seconds) that are too long; songs are playing slowly
 	  // Convert note_length non-terminal into a value which can be fed into a Music object
 	  private int lengthToTicks(MusicParser.Note_lengthContext lengthContext) {
 		  if(lengthContext == null)
