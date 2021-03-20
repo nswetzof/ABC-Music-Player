@@ -39,6 +39,14 @@ public class Note implements Music {
 		return duration;
 	}
 	
+//	/**
+//	 * Set duration of note
+//	 * @param dur desired duration in ticks
+//	 */
+//	public void setDuration(int dur) {
+//		this.duration = dur;
+//	}
+	
 	/**
 	 * @return pitch of the note
 	 */
@@ -71,7 +79,9 @@ public class Note implements Music {
 		
 		this.ticksPerBeat = ticks;
 		
-		this.duration *= this.ticksPerBeat / oldTicksPerBeat;
+//		System.err.println("Revising duration of " + this + " to " + this.duration * this.ticksPerBeat / oldTicksPerBeat);
+		
+		this.duration = this.duration * this.ticksPerBeat / oldTicksPerBeat;
 	}
 	
 	// TODO: if numerator in a fraction is equal to 1, don't want to show (same for rests)

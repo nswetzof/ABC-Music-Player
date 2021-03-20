@@ -64,7 +64,10 @@ public class Chord implements Music {
 	
 	@Override
 	public void setTicksPerBeat(int ticks) {
+		int oldTicksPerBeat = this.getTicksPerBeat();
+		
 		this.ticksPerBeat = ticks;
+		this.duration = ticks / oldTicksPerBeat * this.duration;
 		
 		for(Note note : this.notes) {
 			note.setTicksPerBeat(ticks);
@@ -80,7 +83,6 @@ public class Chord implements Music {
 	@Override
 	public void play(SequencePlayer player, int atTick) {
 		for(Note note : this.notes) {
-			note.setTicksPerBeat(this.ticksPerBeat);
 			player.addNote(note.getPitch().toMidiNote(), atTick, note.getDuration());
 		}
 	}

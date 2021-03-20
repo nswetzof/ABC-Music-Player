@@ -46,7 +46,7 @@ public class Main {
 
     public static void main(String[] args) {
     	try {
-	    	FileInputStream in = new FileInputStream("sample_abc/sample3.abc");
+	    	FileInputStream in = new FileInputStream("sample_abc/fur_elise.abc");
 	    	CharStream stream = new ANTLRInputStream(in);
 	    	
 	    	MusicLexer lexer = new MusicLexer(stream);

@@ -1,29 +1,21 @@
 package abc.parser;
 
-import static org.junit.Assert.assertThrows;
-
 import java.util.*;
-import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import abc.sound.Pitch;
-import abc.sound.SequencePlayer;
 import music.*;
 //import music.Song.MajorKeys;
 
 
 public class MakeSong extends MusicBaseListener {
 	private Map<String, Music> voices = new HashMap<String, Music>();
-	private Stack<Integer> intStack = new Stack<Integer>();
 	
 	private Stack<Music> stack = new Stack<Music>();
 	private Stack<Pitch> pitchStack = new Stack<Pitch>();
-	
-	// map of voice name keys to Music object stacks for storing Music elements that can be repeated
-//	private Map<String, Stack<Music>> repeatStacks = new HashMap<String, Stack<Music>>(); // TODO: MIGHT HAVE REPEAT MAP IN SONG INSTEAD
 	
 	private boolean setLength = false;
 	private boolean setMeter = false;
@@ -60,13 +52,6 @@ public class MakeSong extends MusicBaseListener {
 	Song song = new Song();
 	private String currentVoice = "";
 	
-//	/**
-//	 * @return SequencePlayer object initialized using information contained in the abc file
-//	 */
-//	public SequencePlayer getPlayer() {
-//		throw new RuntimeException("not implemented");
-//	}
-	
 	/**
 	 * @return a Song object with header and music information that can be fed to a SequencePlayer object.
 	 */
@@ -74,35 +59,9 @@ public class MakeSong extends MusicBaseListener {
 		return song;
 	}
 	
-	/**
-	 * @return String representing header information from the abc file
-	 */
-	public String toString() {
-		throw new RuntimeException("not implemented");
-	}
-	
-	/**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterRoot(MusicParser.RootContext ctx) { }
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitRoot(MusicParser.RootContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterHeader(MusicParser.HeaderContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Set default values for optional header fields Meter, Length, and Tempo and define default voice if no other
+	   * voices are specified
 	   */
 	  @Override public void exitHeader(MusicParser.HeaderContext ctx) {
 		  if(!setMeter)
@@ -124,63 +83,30 @@ public class MakeSong extends MusicBaseListener {
 			  song.addVoice(currentVoice);
 		  }
 	  }
+	  
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterField_number(MusicParser.Field_numberContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Set index number of Song
 	   */
 	  @Override public void exitField_number(MusicParser.Field_numberContext ctx) {
 		  song.setIndex(Integer.valueOf(ctx.DIGIT().toString()));
 	  }
-
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitComment(MusicParser.CommentContext ctx) { }
 	  
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Set Song title
 	   */
 	  @Override public void exitField_title(MusicParser.Field_titleContext ctx) {
 		  song.setTitle(ctx.TITLE().toString().substring(2).strip());
 	  }
 	  
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterOther_fields(MusicParser.Other_fieldsContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitOther_fields(MusicParser.Other_fieldsContext ctx) { }
-	  
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Set composer of Song
 	   */
 	  @Override public void exitField_composer(MusicParser.Field_composerContext ctx) {
 		  song.setComposer(ctx.COMPOSER().toString().substring(2).strip());
 	  }
 	  
 	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
+	   * Set default note length of Song
 	   */
 	  @Override public void exitField_default_length(MusicParser.Field_default_lengthContext ctx) {
 		  double numerator = Double.valueOf(ctx.note_length_strict().DIGIT().get(0).toString());
@@ -190,20 +116,6 @@ public class MakeSong extends MusicBaseListener {
 		  song.setTicksPerBeat(denominator);
 		  
 		  this.setLength = true;
-	  }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterField_meter(MusicParser.Field_meterContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitField_meter(MusicParser.Field_meterContext ctx) {
-		  
 	  }
 	  
 	  /**
@@ -261,35 +173,6 @@ public class MakeSong extends MusicBaseListener {
 					  .ordinal());
 		  }
 	  }
-
-	  /**
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterBody(MusicParser.BodyContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitBody(MusicParser.BodyContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterAbc_line(MusicParser.Abc_lineContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitAbc_line(MusicParser.Abc_lineContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterElement(MusicParser.ElementContext ctx) { }
 	  
 	  /**
 	   * Add Music element with type and properties determined by descendant nodes, or parse repeat token, and
@@ -297,7 +180,6 @@ public class MakeSong extends MusicBaseListener {
 	   */
 	  @Override public void exitElement(MusicParser.ElementContext ctx) {
 		  if(!stack.empty()) {
-//			  System.err.println("Adding " + stack.peek() + " to song");
 			  song.addElement(currentVoice, stack.pop());
 			  
 			  return;
@@ -329,27 +211,15 @@ public class MakeSong extends MusicBaseListener {
 	  /**
 	   * Add Music element with type and properties determined by descendant nodes
 	   */
-	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) {
-		  System.out.println("Note element " + stack.peek());
-	  }
+	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) { }
 	  
 	  @Override public void exitNote(MusicParser.NoteContext ctx) {
-		  
-//		  System.out.println("Note Terminal: " + ctx.getText());
 		  if(ctx.note_or_rest().REST() != null)
 			  stack.push(new Rest(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat()));
 		  
 		  else {
 			  stack.push(new Note(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat(), pitchStack.pop()));
 		  }
-	  }
-
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitNote_or_rest(MusicParser.Note_or_restContext ctx) {
 	  }
 	  
 	  /**
@@ -403,13 +273,6 @@ public class MakeSong extends MusicBaseListener {
 		  
 		  pitchStack.push(new Pitch(note.toUpperCase().charAt(0)).transpose(offset));
 	  }
-	  
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitNote_length(MusicParser.Note_lengthContext ctx) { }
 
 	  /**
 	   * {@inheritDoc}
@@ -419,10 +282,7 @@ public class MakeSong extends MusicBaseListener {
 	  @Override public void exitTuplet_element(MusicParser.Tuplet_elementContext ctx) {
 		  Stack<Note> tupletNotes = new Stack<Note>();
 		  
-		  List<Integer> ticksPerBeatList = new ArrayList<Integer>();
-		  ticksPerBeatList.add(song.getTicksPerBeat());
-		  
-		  Note note = (Note)stack.pop();
+		  Note note = (Note)stack.peek(); // don't want to remove from stack until while loop below
 		  int duration = note.getDuration();
 		  int ticksPerBeat = note.getTicksPerBeat();
 		  
@@ -454,20 +314,15 @@ public class MakeSong extends MusicBaseListener {
 		  		break;
 		  }
 		  
-		  ticksPerBeatList.add(ticksPerBeat);
-		  
-		  while(note != null) {
+		  while(!stack.empty()) {
+			  note = (Note)stack.pop();	  
 			  tupletNotes.push(new Note(duration, ticksPerBeat, note.getPitch()));
-			  
-			  if(stack.empty())
-				  note = null;
-			  else
-				  note = (Note)stack.pop();
 		  }
 		  
 		  while(!tupletNotes.empty()) {
 			  song.addElement(currentVoice, tupletNotes.pop());
-			  song.setTicksPerBeat(Music.leastCommonTicksPerBeat(ticksPerBeatList));
+			  song.setTicksPerBeat(Music.leastCommonTicksPerBeat(Arrays.asList(
+					  song.getTicksPerBeat(), ticksPerBeat)));
 		  }
 	  }
 
@@ -615,7 +470,7 @@ public class MakeSong extends MusicBaseListener {
 		  // if denominator is higher than current number of ticks per beat, update ticksPerBeat variable
 		  // to denominator
 		  if(song.getTicksPerBeat() < denominator)
-			  song.setTicksPerBeat(denominator);
+			  song.setTicksPerBeat(Music.leastCommonTicksPerBeat(Arrays.asList(song.getTicksPerBeat(), denominator)));
 		  
 		  return numerator * song.getTicksPerBeat() / denominator;
 	  }
