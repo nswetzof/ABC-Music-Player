@@ -3,12 +3,10 @@ package music;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.junit.Test;
 
 public class SongTest {
-	private final double epsilon = .00001;
 	
 	/*
 	 * Testing strategy for Song:
