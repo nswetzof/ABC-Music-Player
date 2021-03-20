@@ -9,7 +9,6 @@ import java.util.Set;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 
-import org.antlr.v4.gui.Trees;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -17,9 +16,7 @@ import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import abc.parser.MakeSong;
 import abc.parser.MusicLexer;
@@ -87,9 +84,6 @@ public class Song {
 	 * 	meter is mutable so defensive copying is utilized to avoid exposure to clients;
 	 * 	the values of voices are mutable but are never returned or copied by any method;
 	 * 	addVoice only passes a key for voices as a parameter, which are immutable
-	 * 
-	 * TODO: might be able to have play method which concurrently calls the play methods for each Music object in voices;
-	 * 		 would have to figure out what needs to be atomic
 	 */
 	
 	public Song() {
@@ -105,8 +99,6 @@ public class Song {
 		
 		this.ticksPerBeat = 1;
 		repeats = new HashMap<String, Music>();
-		
-//		this.initializeKeyMap();
 	}
 	
 	// Observer methods

@@ -2,10 +2,6 @@ package abc.parser;
 
 import java.util.*;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-import org.antlr.v4.runtime.tree.ErrorNode;
-import org.antlr.v4.runtime.tree.TerminalNode;
-
 import abc.sound.Pitch;
 import music.*;
 //import music.Song.MajorKeys;
@@ -20,6 +16,9 @@ public class MakeSong extends MusicBaseListener {
 	private boolean setLength = false;
 	private boolean setMeter = false;
 	private boolean setTempo = false;
+	
+//	private int tempoToLengthRatioNumerator;
+//	private int tempoToLengthRatioDenominator;
 	
 	private final Map<String, String> keyMap = generateKeyMap(); // maps key String to MajorKeys value
 	private List<Integer> keyOffset; // store the pitch offsets for each note based on accidentals 
@@ -338,64 +337,6 @@ public class MakeSong extends MusicBaseListener {
 		  
 		  stack.push(new Chord(notes));
 	  }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterMid_tune_field(MusicParser.Mid_tune_fieldContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitMid_tune_field(MusicParser.Mid_tune_fieldContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterAccidental(MusicParser.AccidentalContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitAccidental(MusicParser.AccidentalContext ctx) { }
-
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void enterEveryRule(ParserRuleContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void exitEveryRule(ParserRuleContext ctx) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void visitTerminal(TerminalNode node) { }
-	  /**
-	   * {@inheritDoc}
-	   *
-	   * <p>The default implementation does nothing.</p>
-	   */
-	  @Override public void visitErrorNode(ErrorNode node) { }
-	  
-	   // convert a list of String literals in a DIGIT terminal into a string representing the number
-//	  private String digitToString(List<TerminalNode> l) {
-//		  String number = l.stream()
-//				  .map((x) -> x.toString())
-//				  .reduce("", (x, y) -> x + y);
-//		  
-//		  return number;
-//	  }
 	  
 	  /** Set up mappings of key signature strings to MajorKeys enum which corresponds to indices in list of
 		 * 	pitch offsets (PITCH_OFFSETS field)

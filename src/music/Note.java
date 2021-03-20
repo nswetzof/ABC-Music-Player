@@ -79,7 +79,6 @@ public class Note implements Music {
 		
 		this.ticksPerBeat = ticks;
 		
-//		System.err.println("Revising duration of " + this + " to " + this.duration * this.ticksPerBeat / oldTicksPerBeat);
 		
 		this.duration = this.duration * this.ticksPerBeat / oldTicksPerBeat;
 	}
