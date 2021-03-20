@@ -17,9 +17,6 @@ public class MakeSong extends MusicBaseListener {
 	private boolean setMeter = false;
 	private boolean setTempo = false;
 	
-//	private int tempoToLengthRatioNumerator;
-//	private int tempoToLengthRatioDenominator;
-	
 	private final Map<String, String> keyMap = generateKeyMap(); // maps key String to MajorKeys value
 	private List<Integer> keyOffset; // store the pitch offsets for each note based on accidentals 
 									 //	based on the 'key' field
@@ -178,7 +175,7 @@ public class MakeSong extends MusicBaseListener {
 	   * remove all temporary overrides of the key signature upon entering a new bar
 	   */
 	  @Override public void exitElement(MusicParser.ElementContext ctx) {
-		  if(!stack.empty()) {
+		  if(!stack.empty()) {			  
 			  song.addElement(currentVoice, stack.pop());
 			  
 			  return;
@@ -207,18 +204,42 @@ public class MakeSong extends MusicBaseListener {
 		  }
 	  }
 	  
-	  /**
-	   * Add Music element with type and properties determined by descendant nodes
-	   */
-	  @Override public void exitNote_element(MusicParser.Note_elementContext ctx) { }
+	// calculate the required multiple to obtain an integer duration of ticks in a Note after accounting
+		  // for the Song's tempo
+		  private int calculateMultiple(int duration, int ticksPerBeat) {
+			  int multiply = 1;
+			  while(duration * song.noteLengthToTempoRatio() - 
+					  Math.round(duration * song.noteLengthToTempoRatio()) > 0.00001 || 
+					  multiply > 100) {
+				  
+				  multiply++;
+				  
+				  duration = duration * multiply;
+				  ticksPerBeat = ticksPerBeat * multiply;
+				  
+			  }
+			  
+			  return multiply;
+		  }
 	  
 	  @Override public void exitNote(MusicParser.NoteContext ctx) {
-		  if(ctx.note_or_rest().REST() != null)
-			  stack.push(new Rest(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat()));
+		  int duration = this.lengthToTicks(ctx.note_length());
+		  int ticksPerBeat = song.getTicksPerBeat();
 		  
-		  else {
-			  stack.push(new Note(this.lengthToTicks(ctx.note_length()), song.getTicksPerBeat(), pitchStack.pop()));
-		  }
+		  int multiple = calculateMultiple(duration, ticksPerBeat);
+		  duration = duration * multiple;
+		  ticksPerBeat = ticksPerBeat * multiple;
+		  
+		  duration = (int)Math.round(duration * song.noteLengthToTempoRatio());
+		  
+		  if(ctx.note_or_rest().REST() != null)
+			  stack.push(new Rest(duration, ticksPerBeat));
+		  
+		  else		  
+			  stack.push(new Note(duration, ticksPerBeat, pitchStack.pop()));
+		  
+		  if(multiple > 1)
+			  song.setTicksPerBeat(Music.leastCommonTicksPerBeat(Arrays.asList(song.getTicksPerBeat(), ticksPerBeat)));
 	  }
 	  
 	  /**
@@ -375,7 +396,6 @@ public class MakeSong extends MusicBaseListener {
 			return new HashMap<String, String>(keyDict);
 		}
 	  
-		// TODO: think this is giving note lengths (in seconds) that are too long; songs are playing slowly
 	  // Convert note_length non-terminal into a value which can be fed into a Music object
 	  private int lengthToTicks(MusicParser.Note_lengthContext lengthContext) {
 		  if(lengthContext == null)

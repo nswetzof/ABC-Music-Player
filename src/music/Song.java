@@ -173,6 +173,13 @@ public class Song {
 		return this.ticksPerBeat;
 	}
 	
+	/**
+	 * @return ratio of Song tempo to default note length
+	 */
+	public double noteLengthToTempoRatio() {
+		return this.length / this.tempo.first();
+	}
+	
 	// Mutator methods
 	
 	/**
